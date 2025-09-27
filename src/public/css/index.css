@@ -244,3 +244,26 @@ body {
 .modal .btn:focus {
     box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
 }
+
+/* Cards do resumo - altura fixa e responsiva */
+.resumo-card {
+    min-height: 120px;
+}
+
+@media (max-width: 576px) {
+    .resumo-card {
+        min-height: 100px;
+    }
+    .resumo-card h3 {
+        font-size: 1.5rem;
+    }
+    .resumo-card .small {
+        font-size: 0.8rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .resumo-card {
+        min-height: 140px;
+    }
+}
