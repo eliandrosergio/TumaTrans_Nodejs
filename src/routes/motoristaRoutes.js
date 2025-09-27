@@ -9,5 +9,8 @@ router.post('/list', authMiddleware, motoristaController.list);
 router.get('/ver', authMiddleware, motoristaController.formList);
 router.post('/create', authMiddleware, motoristaController.create);
 router.get('/cadastro', authMiddleware, motoristaController.formCreate);
+router.get('/:id', authMiddleware, motoristaController.findById);
+router.put('/:id', authMiddleware, motoristaController.update);
+router.delete('/:id', authMiddleware, motoristaController.delete);
 
 module.exports = router;

@@ -9,5 +9,8 @@ router.post('/list', authMiddleware, veiculoController.list);
 router.get('/ver', authMiddleware, veiculoController.formList);
 router.post('/create', authMiddleware, veiculoController.create);
 router.get('/cadastro', authMiddleware, veiculoController.formCreate);
+router.get('/:id', authMiddleware, veiculoController.findById);
+router.put('/:id', authMiddleware, veiculoController.update);
+router.delete('/:id', authMiddleware, veiculoController.delete);
 
 module.exports = router;

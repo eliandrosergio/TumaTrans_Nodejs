@@ -32,3 +32,42 @@ exports.create = async (req, res) => {
 exports.formCreate = (req, res) => {
     res.render('alunoViews/cadastro_aluno', { title: 'Cadastrar Aluno' });
 };
+
+// Buscar por ID
+exports.findById = async (req, res) => {
+    try {
+        const aluno = await Aluno.findByPk(req.params.id);
+        if (!aluno) {
+            return res.status(404).json({ error: 'Aluno não encontrado.' });
+        }
+        res.json(aluno);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao buscar aluno.' });
+    }
+};
+
+// Atualizar
+exports.update = async (req, res) => {
+    try {
+        const [updated] = await Aluno.update(req.body, { where: { id: req.params.id } });
+        if (!updated) {
+            return res.status(404).json({ error: 'Aluno não encontrado.' });
+        }
+        res.json({ message: 'Aluno atualizado com sucesso.' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao atualizar aluno.' });
+    }
+};
+
+// Deletar
+exports.delete = async (req, res) => {
+    try {
+        const deleted = await Aluno.destroy({ where: { id: req.params.id } });
+        if (!deleted) {
+            return res.status(404).json({ error: 'Aluno não encontrado.' });
+        }
+        res.json({ message: 'Aluno excluído com sucesso.' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir aluno.' });
+    }
+};

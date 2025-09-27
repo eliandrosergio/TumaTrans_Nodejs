@@ -32,4 +32,41 @@ exports.formCreate = (req, res) => {
     res.render('veiculoViews/cadastro_veiculo', { title: 'Cadastrar Veiculo' });
 };
 
-// Outros métodos (update, delete) podem ser adicionados depois
+// Buscar por ID
+exports.findById = async (req, res) => {
+    try {
+        const veiculo = await Veiculo.findByPk(req.params.id);
+        if (!veiculo) {
+            return res.status(404).json({ error: 'Veículo não encontrado.' });
+        }
+        res.json(veiculo);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao buscar veículo.' });
+    }
+};
+
+// Atualizar
+exports.update = async (req, res) => {
+    try {
+        const [updated] = await Veiculo.update(req.body, { where: { id: req.params.id } });
+        if (!updated) {
+            return res.status(404).json({ error: 'Veículo não encontrado.' });
+        }
+        res.json({ message: 'Veículo atualizado com sucesso.' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao atualizar veículo.' });
+    }
+};
+
+// Deletar
+exports.delete = async (req, res) => {
+    try {
+        const deleted = await Veiculo.destroy({ where: { id: req.params.id } });
+        if (!deleted) {
+            return res.status(404).json({ error: 'Veículo não encontrado.' });
+        }
+        res.json({ message: 'Veículo excluído com sucesso.' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir veículo.' });
+    }
+};

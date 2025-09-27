@@ -1,16 +1,21 @@
 /* Css usando nso views */
 
 :root {
-	--gray-50: #f8f9fa;
-	--gray-100: #f1f3f4;
-	--gray-200: #e9ecef;
-	--gray-300: #dee2e6;
-	--gray-400: #ced4da;
-	--gray-500: #adb5bd;
-	--gray-600: #6c757d;
-	--gray-700: #495057;
-	--gray-800: #343a40;
-	--gray-900: #212529;
+	--primary-blue: #2563eb;
+	--primary-blue-hover: #1d4ed8;
+	--success-green: #059669;
+	--warning-orange: #d97706;
+	--danger-red: #dc2626;
+	--gray-50: #f8fafc;
+	--gray-100: #f1f5f9;
+	--gray-200: #e2e8f0;
+	--gray-300: #cbd5e1;
+	--gray-400: #94a3b8;
+	--gray-500: #64748b;
+	--gray-600: #475569;
+	--gray-700: #334155;
+	--gray-800: #1e293b;
+	--gray-900: #0f172a;
 }
 
 body {
@@ -65,23 +70,35 @@ body {
 }
 
 .btn-primary {
-	background-color: var(--gray-800);
-	border-color: var(--gray-800);
+	background-color: var(--primary-blue);
+	border-color: var(--primary-blue);
 }
 
 .btn-primary:hover {
-	background-color: var(--gray-900);
-	border-color: var(--gray-900);
+	background-color: var(--primary-blue-hover);
+	border-color: var(--primary-blue-hover);
 }
 
 .btn-outline-primary {
-	color: var(--gray-800);
-	border-color: var(--gray-300);
+	color: var(--primary-blue);
+	border-color: var(--primary-blue);
 }
 
 .btn-outline-primary:hover {
-	background-color: var(--gray-800);
-	border-color: var(--gray-800);
+	background-color: var(--primary-blue);
+	border-color: var(--primary-blue);
+	color: white;
+}
+
+.btn-outline-danger {
+	color: var(--danger-red);
+	border-color: var(--danger-red);
+}
+
+.btn-outline-danger:hover {
+	background-color: var(--danger-red);
+	border-color: var(--danger-red);
+	color: white;
 }
 
 .form-control {
@@ -133,6 +150,24 @@ body {
 	font-size: 0.875rem;
 }
 
+.alert-success {
+	background-color: #dcfdf7;
+	border-color: var(--success-green);
+	color: var(--success-green);
+}
+
+.alert-danger {
+	background-color: #fef2f2;
+	border-color: var(--danger-red);
+	color: var(--danger-red);
+}
+
+.alert-warning {
+	background-color: #fffbeb;
+	border-color: var(--warning-orange);
+	color: var(--warning-orange);
+}
+
 h1, h2, h3, h4, h5 {
 	color: var(--gray-800);
 	font-weight: 600;
@@ -144,4 +179,12 @@ h1, h2, h3, h4, h5 {
 
 .badge {
 	font-size: 0.75rem;
+}
+
+.badge.bg-primary {
+	background-color: var(--primary-blue) !important;
+}
+
+.badge.bg-secondary {
+	background-color: var(--gray-600) !important;
 }

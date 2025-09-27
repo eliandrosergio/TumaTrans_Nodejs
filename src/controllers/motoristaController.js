@@ -31,3 +31,42 @@ exports.create = async (req, res) => {
 exports.formCreate = (req, res) => {
     res.render('motoristaViews/cadastro_motorista', { title: 'Cadastrar Motorista' });
 };
+
+// Buscar por ID
+exports.findById = async (req, res) => {
+    try {
+        const motorista = await Motorista.findByPk(req.params.id);
+        if (!motorista) {
+            return res.status(404).json({ error: 'Motorista não encontrado.' });
+        }
+        res.json(motorista);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao buscar motorista.' });
+    }
+};
+
+// Atualizar
+exports.update = async (req, res) => {
+    try {
+        const [updated] = await Motorista.update(req.body, { where: { id: req.params.id } });
+        if (!updated) {
+            return res.status(404).json({ error: 'Motorista não encontrado.' });
+        }
+        res.json({ message: 'Motorista atualizado com sucesso.' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao atualizar motorista.' });
+    }
+};
+
+// Deletar
+exports.delete = async (req, res) => {
+    try {
+        const deleted = await Motorista.destroy({ where: { id: req.params.id } });
+        if (!deleted) {
+            return res.status(404).json({ error: 'Motorista não encontrado.' });
+        }
+        res.json({ message: 'Motorista excluído com sucesso.' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir motorista.' });
+    }
+};
