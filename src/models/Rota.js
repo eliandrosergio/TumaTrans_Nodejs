@@ -29,9 +29,45 @@ const Rota = sequelize.define('Rota', {
         type: DataTypes.TEXT, // JSON ou string com pontos
         allowNull: false,
     },
+    motorista_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'motoristas',
+            key: 'id'
+        }
+    },
+    veiculo_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'veiculos',
+            key: 'id'
+        }
+    },
 }, {
     tableName: 'rotas',
     timestamps: true,
 });
+
+Rota.associate = (models) => {
+    // Uma rota pertence a um motorista
+    Rota.belongsTo(models.Motorista, {
+        foreignKey: 'motorista_id',
+        as: 'motorista'
+    });
+    
+    // Uma rota pertence a um veículo
+    Rota.belongsTo(models.Veiculo, {
+        foreignKey: 'veiculo_id',
+        as: 'veiculo'
+    });
+    
+    // Uma rota pode ter vários alunos
+    Rota.hasMany(models.Aluno, {
+        foreignKey: 'rota_id',
+        as: 'alunos'
+    });
+};
 
 module.exports = Rota;

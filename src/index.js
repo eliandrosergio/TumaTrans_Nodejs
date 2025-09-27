@@ -60,6 +60,7 @@ const motoristaRoutes = require('./routes/motoristaRoutes');
 const rotaRoutes = require('./routes/rotaRoutes');
 const veiculoRoutes = require('./routes/veiculoRoutes');
 const navRoutes = require('./routes/navRoutes');
+const relatorioRoutes = require('./routes/relatorioRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/alunos', alunoRoutes);
@@ -67,6 +68,7 @@ app.use('/api/motoristas', motoristaRoutes);
 app.use('/api/rotas', rotaRoutes);
 app.use('/api/veiculos', veiculoRoutes);
 app.use('/nav', navRoutes);
+app.use('/api/relatorios', relatorioRoutes);
 
 // Rota inicial
 app.get('/', (req, res) => {

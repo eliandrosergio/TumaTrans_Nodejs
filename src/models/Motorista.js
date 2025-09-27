@@ -30,4 +30,12 @@ const Motorista = sequelize.define('Motorista', {
     timestamps: true,
 });
 
+Motorista.associate = (models) => {
+    // Um motorista pode ter várias rotas
+    Motorista.hasMany(models.Rota, {
+        foreignKey: 'motorista_id',
+        as: 'rotas'
+    });
+};
+
 module.exports = Motorista;

@@ -7,22 +7,17 @@ const Rota = require('./Rota');
 const Veiculo = require('./Veiculo');
 const Usuario = require('./Usuario');
 
-// Associações (exemplos relacionais)
-Rota.belongsTo(Motorista); // Uma rota tem um motorista
-Motorista.hasMany(Rota);   // Um motorista pode ter várias rotas
+// Criar as associações
+const models = { Aluno, Motorista, Rota, Veiculo, Usuario };
 
-Rota.belongsTo(Veiculo);  // Uma rota tem um veículo
-Veiculo.hasMany(Rota);     // Um veículo pode ter várias rotas
+// Executar associações se existirem
+Object.keys(models).forEach(modelName => {
+    if (models[modelName].associate) {
+        models[modelName].associate(models);
+    }
+});
 
-Aluno.belongsToMany(Rota, { through: 'AlunoRota' }); // Alunos em múltiplas rotas
-Rota.belongsToMany(Aluno, { through: 'AlunoRota' }); // Rotas com múltiplos alunos
-
-// Exporta tudo
 module.exports = {
     sequelize,
-    Aluno,
-    Motorista,
-    Rota,
-    Veiculo,
-    Usuario,
+    ...models
 };

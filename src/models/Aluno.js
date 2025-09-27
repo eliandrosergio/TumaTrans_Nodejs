@@ -39,4 +39,14 @@ const Aluno = sequelize.define('Aluno', {
     timestamps: true, // Adiciona createdAt e updatedAt
 });
 
+// Adicione após a definição do modelo, antes do module.exports:
+Aluno.associate = (models) => {
+    // Um aluno pode estar em uma rota (opcional)
+    Aluno.belongsTo(models.Rota, {
+        foreignKey: 'rota_id',
+        allowNull: true,
+        as: 'rota'
+    });
+};
+
 module.exports = Aluno;

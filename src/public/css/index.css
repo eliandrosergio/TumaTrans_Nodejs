@@ -146,6 +146,17 @@ body {
 	background-color: var(--gray-50);
 }
 
+.table-link {
+	color: rgba(37, 100, 235, 0.8) !important;
+	font-size: 0.875rem;
+	padding: 0.5rem 0.75rem !important;
+	margin: 0 0.125rem;
+}
+
+.table-link:hover {
+	color: var(--gray-900) !important;
+}
+
 .alert {
 	border-radius: 4px;
 	font-size: 0.875rem;

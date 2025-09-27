@@ -1,0 +1,119 @@
+<div class="mb-4">
+    <h2>Relatórios</h2>
+    <p class="text-muted">Visualize dados e estatísticas do sistema</p>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Alunos por Rota</h5>
+                <p class="card-text text-muted">Visualize quantos alunos estão em cada rota</p>
+                <a href="#" onclick="navigateWithToken(event, '/api/relatorios/alunos-rota')" class="btn btn-primary">
+                    Ver Relatório
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Próximos Horários</h5>
+                <p class="card-text text-muted">Veja as próximas rotas do dia</p>
+                <div id="proximosHorarios">
+                    <p class="text-muted">Carregando...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Utilização de Veículos</h5>
+                <p class="card-text text-muted">Relatório de uso da frota</p>
+                <button class="btn btn-outline-primary" disabled>
+                    Em desenvolvimento
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Estatísticas Gerais</h5>
+                <p class="card-text text-muted">Números totais do sistema</p>
+                <div id="estatisticas">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h4 id="statAlunos" class="text-primary">-</h4>
+                            <small>Alunos</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 id="statRotas" class="text-info">-</h4>
+                            <small>Rotas</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Carregar próximos horários
+    async function carregarProximosHorarios() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/relatorios/proximos-horarios', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const horarios = await response.json();
+            
+            const container = document.getElementById('proximosHorarios');
+            if (horarios.length === 0) {
+                container.innerHTML = '<p class="text-muted">Nenhuma rota programada</p>';
+                return;
+            }
+            
+            let html = '';
+            horarios.forEach(rota => {
+                html += `
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <strong>${rota.nome}</strong><br>
+                            <small>${rota.motorista?.nome || 'N/A'}</small>
+                        </div>
+                        <span class="badge bg-primary">${rota.horario_inicio}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } catch (err) {
+            console.error('Erro:', err);
+        }
+    }
+    
+    // Carregar estatísticas
+    async function carregarEstatisticas() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/relatorios/dashboard', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const stats = await response.json();
+            
+            document.getElementById('statAlunos').textContent = stats.totalAlunos;
+            document.getElementById('statRotas').textContent = stats.totalRotas;
+        } catch (err) {
+            console.error('Erro:', err);
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        carregarProximosHorarios();
+        carregarEstatisticas();
+    });
+</script>

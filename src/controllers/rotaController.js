@@ -1,12 +1,33 @@
 // controllers/rotaController.js - Operações CRUD para rotas
 
 const { Rota } = require('../models');
+const { Aluno } = require('../models');
+const { Veiculo } = require('../models');
+const { Motorista } = require('../models');
 
 // Listar todos
 exports.list = async (req, res) => {
     try {
-        const rota = await Rota.findAll();
-        res.json(rota);
+        const rotas = await Rota.findAll({
+            include: [
+                {
+                    model: Motorista,
+                    as: 'motorista',
+                    attributes: ['id', 'nome']
+                },
+                {
+                    model: Veiculo,
+                    as: 'veiculo',
+                    attributes: ['id', 'modelo', 'matricula']
+                },
+                {
+                    model: Aluno,
+                    as: 'alunos',
+                    attributes: ['id', 'nome']
+                }
+            ]
+        });
+        res.json(rotas);
     } catch (err) {
         res.status(500).json({ error: 'Erro ao listar rotas.' });
     }
