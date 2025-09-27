@@ -1,0 +1,112 @@
+<div class="mb-4">
+    <h2>Editar Veículo</h2>
+    <p class="text-muted">Modificar dados do veículo</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div id="message" class="alert" style="display:none;"></div>
+        
+        <form id="editarVeiculoForm">
+            <input type="hidden" id="veiculoId">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="modelo" class="form-label">Modelo</label>
+                    <input type="text" class="form-control" id="modelo" name="modelo" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <input type="text" class="form-control" id="descricao" name="descricao" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="matricula" class="form-label">Matricula</label>
+                    <input type="text" class="form-control" id="matricula" name="matricula" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="capacidade" class="form-label">Capacidade</label>
+                    <input type="number" class="form-control" id="capacidade" name="capacidade" required>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary me-2">Alterar</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="history.back()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const veiculoId = new URLSearchParams(window.location.search).get('id');
+        if (!veiculoId) {
+            alert('ID do veículo não informado');
+            history.back();
+            return;
+        }
+        
+        const token = localStorage.getItem('token');
+        verificarToken(token);
+        
+        try {
+            const response = await fetch(`/api/veiculos/${veiculoId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const veiculo = await response.json();
+            
+            if (response.ok) {
+                document.getElementById('veiculoId').value = veiculo.id;
+                document.getElementById('modelo').value = veiculo.modelo;
+                document.getElementById('descricao').value = veiculo.descricao || '';
+                document.getElementById('matricula').value = veiculo.matricula;
+                document.getElementById('capacidade').value = veiculo.capacidade;
+            } else {
+                emitirMensagem(document.getElementById('message'), 'danger', veiculo.error);
+            }
+        } catch (err) {
+            console.error('Erro:', err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao carregar dados.');
+        }
+    });
+
+    document.getElementById('editarVeiculoForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const data = {
+            modelo: document.getElementById('modelo').value,
+            descricao: document.getElementById('descricao').value,
+            matricula: document.getElementById('matricula').value,
+            capacidade: document.getElementById('capacidade').value
+        };
+
+        mostrarModal('Confirmar Alteração', 'Tem certeza que deseja alterar os dados deste veículo?', async () => {
+            const token = localStorage.getItem('token');
+            const veiculoId = document.getElementById('veiculoId').value;
+            
+            try {
+                const response = await fetch(`/api/veiculos/${veiculoId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    emitirMensagem(document.getElementById('message'), 'success', result.message);
+                    setTimeout(() => history.back(), 2000);
+                } else {
+                    emitirMensagem(document.getElementById('message'), 'danger', result.error);
+                }
+            } catch (err) {
+                console.error('Erro:', err);
+                emitirMensagem(document.getElementById('message'), 'danger', 'Erro na conexão.');
+            }
+        });
+    });
+</script>

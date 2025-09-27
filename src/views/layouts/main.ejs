@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/css/index.css">k
 </head>
 <body>
+    <!-- NavBar para navegação -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="/">
@@ -28,6 +29,7 @@
         </div>
     </nav>
     
+    <!-- Corpo do site gerenciado pelo ejs -->
     <div style="padding-top: 70px;">
         <div class="container">
             <div class="main-content">
@@ -35,8 +37,52 @@
             </div>
         </div>
     </div>
+    
+    <!-- Footer informativo -->
+    <footer class="bg-light border-top mt-5">
+        <div class="container">
+            <div class="row py-4">
+                <div class="col-md-6">
+                    <h6 class="mb-2">Sistema de Gestão de Transporte Escolar</h6>
+                    <p class="text-muted mb-0">Complexo Escolar Privado Tchiungo</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted mb-0">© 2024 - Desenvolvido por eliandrosergio</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de Confirmação -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Confirmar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    Tem certeza que deseja continuar?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="modalNegar">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="modalConfirm">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
+        // Carrega Bootstrap se não estiver disponível
+        if (typeof bootstrap === 'undefined') {
+            const script = document.createElement('script');
+            script.src = '/js/bootstrap.bundle.min.js';
+            script.onload = function() {
+                console.log('Bootstrap carregado dinamicamente');
+            };
+            document.head.appendChild(script);
+        }
+
         // Emite uma mensagem em uma div com o seu tipo certo
         function emitirMensagem( messageDiv, tipo, msg, ocultar ) {
             messageDiv.className = `alert alert-${tipo}`;
@@ -60,7 +106,8 @@
         }
 
         // Faz requisições get ao servidor usando o token
-        function navigateWithToken( event, url ) {
+        function navigateWithToken(event, url) {
+            console.log("Navegando para:", url);
             const token = localStorage.getItem('token');
             event.preventDefault();
             verificarToken(token);
@@ -73,11 +120,16 @@
             .then(response => {
                 if (response.ok) {
                     return response.text();
+                } else if (response.status === 404) {
+                    throw new Error('Página não encontrada (404)');
                 } else {
-                    throw new Error('Erro ao acessar a página: ' + response.statusText);
+                    throw new Error(`Erro ao acessar a página: ${response.status} - ${response.statusText}`);
                 }
             })
             .then(html => {
+                // Atualiza a URL do navegador antes de renderizar o conteúdo
+                window.history.pushState({}, '', url);
+                
                 document.open();
                 document.write(html);
                 document.close();
@@ -85,8 +137,9 @@
             })
             .catch(err => {
                 console.error('Erro:', err);
-                alert('Erro ao navegar. Faça login novamente.');
-                window.location.href = '/nav/login';
+                mostrarModal('Erro de Navegação', `Erro ao navegar para a página: ${err.message}`, () => {
+                    window.location.href = '/';
+                });
             });
         }
 
@@ -106,12 +159,43 @@
                 loginLink.style.display = 'block';
             }
         }
-
-        // Funções globais para edição e exclusão
-        function confirmarDelete(id, tipo) {
-            if (confirm(`Tem certeza que deseja excluir este ${tipo}?`)) {
-                deletarItem(id, tipo);
+        
+        // Função para mostrar modal de confirmação
+        function mostrarModal( titulo, mensagem, callback, isNoQuestion ) {
+            document.getElementById('modalTitle').textContent = titulo;
+            document.getElementById('modalBody').textContent = mensagem;
+            
+            const modalElement = document.getElementById('confirmModal');
+            const modal = new bootstrap.Modal(modalElement);
+            const confirmBtn = document.getElementById('modalConfirm');
+            const negarBtn = document.getElementById('modalNegar');
+            
+            // Esconde a opção de cancelar em "Não Questões"
+            if (isNoQuestion) {
+                negarBtn.style.display = block;
+            } else {
+                negarBtn.style.display = '';
             }
+
+            // Remove listeners anteriores
+            const newConfirmBtn = confirmBtn.cloneNode(true);
+            confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+            
+            // Adiciona novo listener
+            document.getElementById('modalConfirm').addEventListener('click', () => {
+                modal.hide();
+                // Aguarda o modal fechar completamente antes de executar callback
+                modalElement.addEventListener('hidden.bs.modal', callback, { once: true });
+            });
+            
+            modal.show();
+        }
+
+        // Funções globais para exclusão
+        function confirmarDelete(id, tipo) {
+            mostrarModal('Confirmar Exclusão', `Tem certeza que deseja excluir este ${tipo}?`, () => {
+                deletarItem(id, tipo);
+            });
         }
 
         async function deletarItem(id, tipo) {
@@ -126,37 +210,36 @@
                 });
                 const result = await response.json();
                 if (response.ok) {
-                    alert(result.message);
-                    location.reload();
+                    mostrarModal('Sucesso', result.message, () => {
+                        location.reload();
+                    });
                 } else {
-                    alert(result.error);
+                    mostrarModal('Erro', result.error, () => {});
                 }
             } catch (err) {
                 console.error('Erro:', err);
-                alert('Erro na conexão.');
+                mostrarModal('Erro', 'Erro na conexão.', () => {});
             }
         }
 
+        // Funções globais para edição
         function editarAluno(id) {
-            sessionStorage.setItem('editandoAluno', id);
-            navigateWithToken(event, '/api/alunos/cadastro');
+            navigateWithToken(event, `/api/alunos/editar?id=${id}`);
         }
 
         function editarMotorista(id) {
-            sessionStorage.setItem('editandoMotorista', id);
-            navigateWithToken(event, '/api/motoristas/cadastro');
+            navigateWithToken(event, `/api/motoristas/editar?id=${id}`);
         }
 
         function editarVeiculo(id) {
-            sessionStorage.setItem('editandoVeiculo', id);
-            navigateWithToken(event, '/api/veiculos/cadastro');
+            navigateWithToken(event, `/api/veiculos/editar?id=${id}`);
         }
 
         function editarRota(id) {
-            sessionStorage.setItem('editandoRota', id);
-            navigateWithToken(event, '/api/rotas/cadastro');
+            console.log("Editando rota com ID:", id);
+            navigateWithToken(event, `/api/rotas/editar?id=${id}`);
         }
-
+        
         // Executa ao carregar e atualiza a navegação
         document.addEventListener('DOMContentLoaded', updateNav);
         window.addEventListener('storage', updateNav);

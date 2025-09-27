@@ -6,6 +6,7 @@
 	--success-green: #059669;
 	--warning-orange: #d97706;
 	--danger-red: #dc2626;
+	--white: #ffffff;
 	--gray-50: #f8fafc;
 	--gray-100: #f1f5f9;
 	--gray-200: #e2e8f0;
@@ -27,30 +28,30 @@ body {
 }
 
 .navbar {
-	background-color: white !important;
-	border-bottom: 1px solid var(--gray-200);
+	background-color: var(--primary-blue) !important;
+	border-bottom: 1px solid var(--primary-blue-hover);
 	padding: 0.75rem 0;
 }
 
 .navbar-brand {
 	font-weight: 600;
-	color: var(--gray-800) !important;
+	color: var(--white) !important;
 	font-size: 1rem;
 }
 
 .nav-link {
-	color: var(--gray-600) !important;
+	color: rgba(255, 255, 255, 0.8) !important;
 	font-size: 0.875rem;
 	padding: 0.5rem 0.75rem !important;
 	margin: 0 0.125rem;
 }
 
 .nav-link:hover {
-	color: var(--gray-800) !important;
+	color: var(--white) !important;
 }
 
 .main-content {
-	background: white;
+	background: var(--white);
 	border: 1px solid var(--gray-200);
 	border-radius: 4px;
 	padding: 1.5rem;
@@ -58,7 +59,7 @@ body {
 }
 
 .card {
-	background: white;
+	background: var(--white);
 	border: 1px solid var(--gray-200);
 	border-radius: 4px;
 }
@@ -87,7 +88,7 @@ body {
 .btn-outline-primary:hover {
 	background-color: var(--primary-blue);
 	border-color: var(--primary-blue);
-	color: white;
+	color: var(--white);
 }
 
 .btn-outline-danger {
@@ -98,7 +99,7 @@ body {
 .btn-outline-danger:hover {
 	background-color: var(--danger-red);
 	border-color: var(--danger-red);
-	color: white;
+	color: var(--white);
 }
 
 .form-control {
@@ -126,7 +127,7 @@ body {
 
 .table thead th {
 	background-color: var(--gray-800);
-	color: white;
+	color: var(--white);
 	border: none;
 	font-size: 0.75rem;
 	font-weight: 500;
@@ -187,4 +188,59 @@ h1, h2, h3, h4, h5 {
 
 .badge.bg-secondary {
 	background-color: var(--gray-600) !important;
+}
+
+footer {
+    background-color: var(--gray-100) !important;
+    border-top: 1px solid var(--gray-200) !important;
+    margin-top: 3rem;
+}
+
+footer h6 {
+    color: var(--gray-800);
+    font-weight: 600;
+}
+
+footer p {
+    font-size: 0.875rem;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container:first-of-type {
+    flex: 1;
+}
+
+/* Modal improvements */
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--gray-200);
+    background-color: var(--gray-50);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--gray-200);
+    background-color: var(--gray-50);
+}
+
+/* Ensure proper focus handling */
+.modal:focus {
+    outline: none;
+}
+
+.modal .btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
 }

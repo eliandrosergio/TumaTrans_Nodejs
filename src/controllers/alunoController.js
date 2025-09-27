@@ -71,3 +71,8 @@ exports.delete = async (req, res) => {
         res.status(500).json({ error: 'Erro ao excluir aluno.' });
     }
 };
+
+// Mostrar formulário de edição
+exports.formEdit = (req, res) => {
+    res.render('alunoViews/editar_aluno', { title: 'Editar Aluno' });
+};

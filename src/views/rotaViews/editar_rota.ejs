@@ -1,0 +1,119 @@
+<div class="mb-4">
+    <h2>Editar Rota</h2>
+    <p class="text-muted">Modificar dados da rota</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div id="message" class="alert" style="display:none;"></div>
+        
+        <form id="editarRotaForm">
+            <input type="hidden" id="rotaId">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="nome" class="form-label">Nome da Rota</label>
+                    <input type="text" class="form-control" id="nome" name="nome" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <input type="text" class="form-control" id="descricao" name="descricao" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="horario_inicio" class="form-label">Horário de Início</label>
+                    <input type="time" class="form-control" id="horario_inicio" name="horario_inicio" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="horario_fim" class="form-label">Horário de Fim</label>
+                    <input type="time" class="form-control" id="horario_fim" name="horario_fim" required>
+                </div>
+
+                <div class="col-12">
+                    <label for="pontos_parada" class="form-label">Pontos de Parada</label>
+                    <textarea class="form-control" id="pontos_parada" name="pontos_parada" rows="3" required></textarea>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary me-2">Alterar</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="history.back()">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const rotaId = new URLSearchParams(window.location.search).get('id');
+        if (!rotaId) {
+            alert('ID da rota não informado');
+            navigateWithToken(event, '/api/rotas/ver');
+            return ;
+        }
+        
+        const token = localStorage.getItem('token');
+        verificarToken(token);
+        
+        try {
+            const response = await fetch(`/api/rotas/${rotaId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const rota = await response.json();
+            
+            if (response.ok) {
+                document.getElementById('rotaId').value = rota.id;
+                document.getElementById('nome').value = rota.nome;
+                document.getElementById('descricao').value = rota.descricao;
+                document.getElementById('horario_inicio').value = rota.horario_inicio;
+                document.getElementById('horario_fim').value = rota.horario_fim;
+                document.getElementById('pontos_parada').value = rota.pontos_parada;
+            } else {
+                emitirMensagem(document.getElementById('message'), 'danger', rota.error);
+            }
+        } catch (err) {
+            console.error('Erro:', err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao carregar dados.');
+        }
+    });
+
+    document.getElementById('editarRotaForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const data = {
+            nome: document.getElementById('nome').value,
+            descricao: document.getElementById('descricao').value,
+            horario_inicio: document.getElementById('horario_inicio').value,
+            horario_fim: document.getElementById('horario_fim').value,
+            pontos_parada: document.getElementById('pontos_parada').value
+        };
+
+        mostrarModal('Confirmar Alteração', 'Tem certeza que deseja alterar os dados desta rota?', async () => {
+            const token = localStorage.getItem('token');
+            const rotaId = document.getElementById('rotaId').value;
+            
+            try {
+                const response = await fetch(`/api/rotas/${rotaId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    emitirMensagem(document.getElementById('message'), 'success', result.message);
+                    setTimeout(() => history.back(), 2000);
+                } else {
+                    emitirMensagem(document.getElementById('message'), 'danger', result.error);
+                }
+            } catch (err) {
+                console.error('Erro:', err);
+                emitirMensagem(document.getElementById('message'), 'danger', 'Erro na conexão.');
+            }
+        });
+    });
+</script>

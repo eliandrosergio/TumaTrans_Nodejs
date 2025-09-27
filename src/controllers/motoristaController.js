@@ -70,3 +70,8 @@ exports.delete = async (req, res) => {
         res.status(500).json({ error: 'Erro ao excluir motorista.' });
     }
 };
+
+// Mostrar formulário de edição
+exports.formEdit = (req, res) => {
+    res.render('motoristaViews/editar_motorista', { title: 'Editar Motorista' });
+};
