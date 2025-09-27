@@ -1,6 +1,6 @@
 # 🚌 Sistema de Gestão de Transporte Escolar
 
-[![Versão](https://img.shields.io/badge/versão-1.4.0-blue.svg)](https://github.com/eliandrosergio/gestao-transporte-escolar)
+[![Versão](https://img.shields.io/badge/versão-1.16.0-blue.svg)](https://github.com/eliandrosergio/gestao-transporte-escolar)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 [![Licença](https://img.shields.io/badge/licença-MIT-orange.svg)](LICENSE)
 [![Express](https://img.shields.io/badge/Express-5.1.0-yellow.svg)](https://expressjs.com/)
