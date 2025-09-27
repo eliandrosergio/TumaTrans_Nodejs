@@ -38,10 +38,10 @@
 </div>
 
 <script>
+    // Manipula o envio do formulário
     document.getElementById('motoristaForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        verificarToken(token);
         const data = {
             nome: document.getElementById('nome').value,
             endereco: document.getElementById('endereco').value,

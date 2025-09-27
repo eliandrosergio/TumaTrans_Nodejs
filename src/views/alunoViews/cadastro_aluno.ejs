@@ -51,7 +51,6 @@
     document.getElementById('alunoForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        verificarToken(token);
         const data = {
             nome: document.getElementById('nome').value,
             num_processo: document.getElementById('num_processo').value,

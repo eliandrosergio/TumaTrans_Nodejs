@@ -34,7 +34,6 @@
 	// Carrega a lista de veiculos
 	async function carregarVeiculos() {
 		const token = localStorage.getItem('token');
-        verificarToken(token);
 		try {
 			const response = await fetch('/api/veiculos/list', {
 				method: 'POST',

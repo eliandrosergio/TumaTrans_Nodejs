@@ -38,13 +38,14 @@
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary me-2">Alterar</button>
-                <button type="button" class="btn btn-outline-secondary" onclick="history.back()">Cancelar</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="navigateWithToken(event, '/api/rotas/ver')">Cancelar</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
+    // Carrega os dados da rota e preenche o formulário
     document.addEventListener('DOMContentLoaded', async () => {
         const rotaId = new URLSearchParams(window.location.search).get('id');
         if (!rotaId) {
@@ -53,8 +54,8 @@
             return ;
         }
         
+        // Traz os dados da rota para preencher o formulário
         const token = localStorage.getItem('token');
-        verificarToken(token);
         
         try {
             const response = await fetch(`/api/rotas/${rotaId}`, {
@@ -106,7 +107,7 @@
                 
                 if (response.ok) {
                     emitirMensagem(document.getElementById('message'), 'success', result.message);
-                    setTimeout(() => history.back(), 2000);
+                    setTimeout(() => navigateWithToken(e, '/api/rotas/ver'), 1500);
                 } else {
                     emitirMensagem(document.getElementById('message'), 'danger', result.error);
                 }
@@ -114,6 +115,6 @@
                 console.error('Erro:', err);
                 emitirMensagem(document.getElementById('message'), 'danger', 'Erro na conexão.');
             }
-        });
+        }, false);
     });
 </script>

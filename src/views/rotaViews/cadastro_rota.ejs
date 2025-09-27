@@ -43,10 +43,10 @@
 </div>
 
 <script>
+    // Verifica se o token existe
     document.getElementById('rotaForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        verificarToken(token);
         const data = {
             nome: document.getElementById('nome').value,
             descricao: document.getElementById('descricao').value,

@@ -8,6 +8,7 @@ const fs = require('fs'); // Para trabalhar com filesystems
 const app = express();
 const dotenv = require('dotenv');
 const { sequelize } = require('./models');
+const cookieParser = require('cookie-parser'); // Para ler cookies
 const expressLayouts = require('express-ejs-layouts');
 
 const PORT = process.env.PORT || 3000; // Porta para o HTTP
@@ -43,6 +44,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public')); // Pasta para CSS, JS estático
 app.use(expressLayouts);
+
+// Depois das linhas existentes de app.use(), adicione:
+app.use(cookieParser());
 
 // Configura EJS
 app.set('view engine', 'ejs');

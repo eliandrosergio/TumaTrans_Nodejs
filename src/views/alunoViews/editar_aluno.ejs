@@ -43,23 +43,24 @@
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary me-2">Alterar</button>
-                <button type="button" class="btn btn-outline-secondary" onclick="history.back()">Cancelar</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="navigateWithToken(event, '/api/alunos/ver')">Cancelar</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
+    // Carrega os dados do aluno ao abrir a página
     document.addEventListener('DOMContentLoaded', async () => {
         const alunoId = new URLSearchParams(window.location.search).get('id');
         if (!alunoId) {
             alert('ID do aluno não informado');
-            history.back();
+            navigateWithToken(event, '/api/alunos/ver');
             return;
         }
         
+        // Traz o token do localStorage
         const token = localStorage.getItem('token');
-        verificarToken(token);
         
         try {
             const response = await fetch(`/api/alunos/${alunoId}`, {
@@ -113,7 +114,7 @@
                 
                 if (response.ok) {
                     emitirMensagem(document.getElementById('message'), 'success', result.message);
-                    setTimeout(() => history.back(), 2000);
+                    setTimeout(() => navigateWithToken(e, '/api/alunos/ver'), 1500);
                 } else {
                     emitirMensagem(document.getElementById('message'), 'danger', result.error);
                 }
@@ -121,6 +122,6 @@
                 console.error('Erro:', err);
                 emitirMensagem(document.getElementById('message'), 'danger', 'Erro na conexão.');
             }
-        });
+        }, false);
     });
 </script>

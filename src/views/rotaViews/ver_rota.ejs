@@ -32,9 +32,9 @@
 </div>
 
 <script>
+    // Função para carregar as rotas da API e popular a tabela
     async function carregarRotas() {
         const token = localStorage.getItem('token');
-        verificarToken(token);
         try {
             const response = await fetch('/api/rotas/list', {
                 method: 'POST',

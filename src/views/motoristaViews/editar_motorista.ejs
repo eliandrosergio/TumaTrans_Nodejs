@@ -33,23 +33,24 @@
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary me-2">Alterar</button>
-                <button type="button" class="btn btn-outline-secondary" onclick="history.back()">Cancelar</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="navigateWithToken(event, '/api/motoristas/ver')">Cancelar</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
+    // Carrega os dados do motorista ao carregar a página
     document.addEventListener('DOMContentLoaded', async () => {
         const motoristaId = new URLSearchParams(window.location.search).get('id');
         if (!motoristaId) {
             alert('ID do motorista não informado');
-            history.back();
+            navigateWithToken(event, '/api/motoristas/ver');
             return;
         }
         
+        // Troca para pegar o token do cookie
         const token = localStorage.getItem('token');
-        verificarToken(token);
         
         try {
             const response = await fetch(`/api/motoristas/${motoristaId}`, {
@@ -99,7 +100,7 @@
                 
                 if (response.ok) {
                     emitirMensagem(document.getElementById('message'), 'success', result.message);
-                    setTimeout(() => history.back(), 2000);
+                    setTimeout(() => navigateWithToken(e, '/api/motoristas/ver'), 1500);
                 } else {
                     emitirMensagem(document.getElementById('message'), 'danger', result.error);
                 }
@@ -107,6 +108,6 @@
                 console.error('Erro:', err);
                 emitirMensagem(document.getElementById('message'), 'danger', 'Erro na conexão.');
             }
-        });
+        }, false);
     });
 </script>

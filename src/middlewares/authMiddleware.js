@@ -5,12 +5,13 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const authMiddleware = (req, res, next) => {
-    // middlewares/authMiddleware.js
-    const authHeader = req.header('Authorization');
-    if (!authHeader) {
-        return res.status(401).json({ error: 'Acesso negado. Cabeçalho Authorization não fornecido.' });
-    }
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+    // lendo o token do header Authorization, cookie ou query/body
+    const token = req.header('Authorization')?.replace('Bearer ', '') || 
+                req.cookies.authToken ||
+                req.query.authToken || 
+                req.body.authToken ||
+                req.cookies.authToken;
+
     if (!token) {
         return res.status(401).json({ error: 'Acesso negado. Token não fornecido.' });
     }

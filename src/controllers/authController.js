@@ -25,6 +25,11 @@ exports.login = async (req, res) => {
             return res.status(401).json({ error: 'Credenciais inválidas.' });
         }
         const token = jwt.sign({ id: usuario.id, nivel: usuario.nivel }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        // Depois de: const token = jwt.sign(...)
+        res.cookie('authToken', token, { 
+            httpOnly: false, // Para JavaScript acessar
+            maxAge: 3600000 // 1 hora
+        });
         res.json({ message: 'Login bem-sucedido.', token });
     } catch (err) {
         res.status(500).json({ error: 'Erro ao fazer login.' });

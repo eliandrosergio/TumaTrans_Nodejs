@@ -31,9 +31,9 @@
 </div>
 
 <script>
+	// Carrega a lista de motoristas
 	async function carregarMotoristas() {
 		const token = localStorage.getItem('token');
-        verificarToken(token);
 		try {
 			const response = await fetch('/api/motoristas/list', {
 				method: 'POST',

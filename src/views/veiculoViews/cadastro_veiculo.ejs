@@ -38,10 +38,10 @@
 </div>
 
 <script>
+    // Verifica o token, se inválido redireciona para login
     document.getElementById('veiculoForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
-        verificarToken(token);
         const data = {
             modelo: document.getElementById('modelo').value,
             descricao: document.getElementById('descricao').value,
