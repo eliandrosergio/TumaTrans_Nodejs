@@ -1,20 +1,35 @@
-<!DOCTYPE html>
-<h2>Lista de Motoristas Cadastrados</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>Motoristas</h2>
+        <p class="text-muted mb-0">Lista de condutores cadastrados</p>
+    </div>
+    <button class="btn btn-outline-primary" onclick="carregarMotoristas()">Atualizar</button>
+</div>
+
 <div id="message" class="alert" style="display:none;"></div>
-<p style="margin: 12px 0px 6px 0px;"><a href="#" onclick="carregarMotoristas()">Atualizar Lista</a></p>
-<table class="table">
-	<thead>
-		<th>ID</th>
-		<th>Nome do Motorista</th>
-		<th>Endereço do Motorista</th>
-		<th>Contacto Principal</th>
-		<th>Contacto de Emergência</th>
-	</thead>
-	<tbody id="tableBody"></tbody>
-</table>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Endereço</th>
+                    <th>Telefone</th>
+                    <th>Emergência</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr id="loadingRow">
+                    <td colspan="5" class="text-center py-3">Carregando...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script>
-	// Carrega a lista de motoristas
 	async function carregarMotoristas() {
 		const token = localStorage.getItem('token');
         verificarToken(token);
@@ -41,11 +56,11 @@
 						tableBody.innerHTML += `<tr id="colum${i}"></tr>`;
 						const atualColm = document.getElementById(`colum${i}`);
 						
-						atualColm.innerHTML += `<td>${element.id}</td>`;
-						atualColm.innerHTML += `<td>${element.nome}</td>`;
-						atualColm.innerHTML += `<td>${element.endereco}</td>`;
+						atualColm.innerHTML += `<td><span class="badge bg-primary">${element.id}</span></td>`;
+						atualColm.innerHTML += `<td><strong>${element.nome}</strong></td>`;
+						atualColm.innerHTML += `<td class="text-muted">${element.endereco}</td>`;
 						atualColm.innerHTML += `<td>${element.telefone}</td>`;
-						atualColm.innerHTML += `<td>${element.telefone_emergencia}</td>`;
+						atualColm.innerHTML += `<td class="text-muted">${element.telefone_emergencia}</td>`;
 					}
 				}
 			}
@@ -56,6 +71,5 @@
 		}
 	}
 
-	// Executa ao carregar
 	document.addEventListener('DOMContentLoaded', carregarMotoristas());
 </script>

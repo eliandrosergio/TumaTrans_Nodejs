@@ -1,5 +1,147 @@
 /* Css usando nso views */
 
-.menu-box-element {
-	margin: 2px 2px 8px 2px;
+:root {
+	--gray-50: #f8f9fa;
+	--gray-100: #f1f3f4;
+	--gray-200: #e9ecef;
+	--gray-300: #dee2e6;
+	--gray-400: #ced4da;
+	--gray-500: #adb5bd;
+	--gray-600: #6c757d;
+	--gray-700: #495057;
+	--gray-800: #343a40;
+	--gray-900: #212529;
+}
+
+body {
+	background-color: var(--gray-50);
+	color: var(--gray-800);
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.navbar {
+	background-color: white !important;
+	border-bottom: 1px solid var(--gray-200);
+	padding: 0.75rem 0;
+}
+
+.navbar-brand {
+	font-weight: 600;
+	color: var(--gray-800) !important;
+	font-size: 1rem;
+}
+
+.nav-link {
+	color: var(--gray-600) !important;
+	font-size: 0.875rem;
+	padding: 0.5rem 0.75rem !important;
+	margin: 0 0.125rem;
+}
+
+.nav-link:hover {
+	color: var(--gray-800) !important;
+}
+
+.main-content {
+	background: white;
+	border: 1px solid var(--gray-200);
+	border-radius: 4px;
+	padding: 1.5rem;
+	margin-top: 1rem;
+}
+
+.card {
+	background: white;
+	border: 1px solid var(--gray-200);
+	border-radius: 4px;
+}
+
+.btn {
+	font-size: 0.875rem;
+	padding: 0.5rem 1rem;
+	border-radius: 4px;
+}
+
+.btn-primary {
+	background-color: var(--gray-800);
+	border-color: var(--gray-800);
+}
+
+.btn-primary:hover {
+	background-color: var(--gray-900);
+	border-color: var(--gray-900);
+}
+
+.btn-outline-primary {
+	color: var(--gray-800);
+	border-color: var(--gray-300);
+}
+
+.btn-outline-primary:hover {
+	background-color: var(--gray-800);
+	border-color: var(--gray-800);
+}
+
+.form-control {
+	border: 1px solid var(--gray-300);
+	border-radius: 4px;
+	font-size: 0.875rem;
+}
+
+.form-control:focus {
+	border-color: var(--gray-500);
+	box-shadow: none;
+}
+
+.form-label {
+	font-size: 0.875rem;
+	color: var(--gray-700);
+	margin-bottom: 0.25rem;
+}
+
+.table {
+	border: 1px solid var(--gray-200);
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.table thead th {
+	background-color: var(--gray-800);
+	color: white;
+	border: none;
+	font-size: 0.75rem;
+	font-weight: 500;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	padding: 0.75rem;
+}
+
+.table tbody td {
+	padding: 0.75rem;
+	border-color: var(--gray-200);
+	font-size: 0.875rem;
+}
+
+.table tbody tr:hover {
+	background-color: var(--gray-50);
+}
+
+.alert {
+	border-radius: 4px;
+	font-size: 0.875rem;
+}
+
+h1, h2, h3, h4, h5 {
+	color: var(--gray-800);
+	font-weight: 600;
+}
+
+.text-muted {
+	color: var(--gray-600) !important;
+}
+
+.badge {
+	font-size: 0.75rem;
 }

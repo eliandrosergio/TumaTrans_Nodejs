@@ -1,22 +1,37 @@
-<!DOCTYPE html>
-<h2>Lista de Alunos Cadastrados</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>Alunos</h2>
+        <p class="text-muted mb-0">Lista de estudantes cadastrados</p>
+    </div>
+    <button class="btn btn-outline-primary" onclick="carregarAlunos()">Atualizar</button>
+</div>
+
 <div id="message" class="alert" style="display:none;"></div>
-<p style="margin: 12px 0px 6px 0px;"><a href="#" onclick="carregarAlunos()">Atualizar Lista</a></p>
-<table class="table">
-	<thead>
-		<th>ID</th>
-		<th>Nome do Aluno</th>
-		<th>Idade do Aluno</th>
-		<th>Processo do Aluno</th>
-		<th>Endereço do Aluno</th>
-		<th>Contacto do Aluno</th>
-		<th>Contacto do Encarregado</th>
-	</thead>
-	<tbody id="tableBody"></tbody>
-</table>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Data Nasc.</th>
+                    <th>Processo</th>
+                    <th>Endereço</th>
+                    <th>Tel. Aluno</th>
+                    <th>Tel. Responsável</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr id="loadingRow">
+                    <td colspan="7" class="text-center py-3">Carregando...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script>
-	// Carrega a lista de alunos
 	async function carregarAlunos() {
 		const token = localStorage.getItem('token');
         verificarToken(token);
@@ -43,11 +58,11 @@
 						tableBody.innerHTML += `<tr id="colum${i}"></tr>`;
 						const atualColm = document.getElementById(`colum${i}`);
 						
-						atualColm.innerHTML += `<td>${element.id}</td>`;
-						atualColm.innerHTML += `<td>${element.nome}</td>`;
-						atualColm.innerHTML += `<td>${element.data_nascimento}</td>`;
-						atualColm.innerHTML += `<td>${element.num_processo}</td>`;
-						atualColm.innerHTML += `<td>${element.endereco}</td>`;
+						atualColm.innerHTML += `<td><span class="badge bg-primary">${element.id}</span></td>`;
+						atualColm.innerHTML += `<td><strong>${element.nome}</strong></td>`;
+						atualColm.innerHTML += `<td class="text-muted">${element.data_nascimento}</td>`;
+						atualColm.innerHTML += `<td><span class="badge bg-secondary">${element.num_processo}</span></td>`;
+						atualColm.innerHTML += `<td class="text-muted">${element.endereco}</td>`;
 						atualColm.innerHTML += `<td>${element.telefone_aluno}</td>`;
 						atualColm.innerHTML += `<td>${element.telefone_encarregado}</td>`;
 					}
@@ -60,6 +75,5 @@
 		}
 	}
 
-	// Executa ao carregar
 	document.addEventListener('DOMContentLoaded', carregarAlunos());
 </script>

@@ -18,6 +18,10 @@ const Veiculo = sequelize.define('Veiculo', {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    descricao: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     capacidade: {
         type: DataTypes.INTEGER,
         allowNull: false,

@@ -5,7 +5,7 @@
 [![Licença](https://img.shields.io/badge/licença-MIT-orange.svg)](LICENSE)
 [![Express](https://img.shields.io/badge/Express-5.1.0-yellow.svg)](https://expressjs.com/)
 
-> Sistema completo para gestão de transporte escolar do **Complexo Escolar Privado Beira Alta II**, desenvolvido em Node.js com interface web moderna e segura.
+> Sistema completo para gestão de transporte escolar do **Complexo Escolar Privado Tchiungo**, desenvolvido em Node.js com interface web moderna e segura.
 
 ## 📋 Índice
 
@@ -206,7 +206,7 @@ npm start
 - `GET /nav/login` - Página de login
 - `GET /nav/logout` - Logout
 - `GET /nav/home` - Home público
-- `GET /nav/homeControl` - Painel de controle (autenticado)
+- `GET /nav/painelControl` - Painel de controle (autenticado)
 - `GET /nav/redefinir_senha` - Redefinir senha
 
 ## 📁 Estrutura do Projeto

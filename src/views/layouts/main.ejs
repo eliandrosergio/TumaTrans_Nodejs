@@ -5,21 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/index.css">k
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Principal</a>
-            <div class="navbar-nav" id="navLinks">
-                <a class="nav-link" href="#" id="homeControlLink" style="display: none;" onclick="navigateWithToken(event, '/nav/homeControl')">Painel de Control</a>
-                <a class="nav-link" href="/nav/logout" id="logoutLink" style="display: none;">Sair</a>
-                <a class="nav-link" href="/nav/login" id="loginLink">Entrar</a>
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-bus-front me-2"></i>Gestão de Transporte
+            </a>
+            <div class="navbar-nav ms-auto d-flex flex-row" id="navLinks">
+                <a class="nav-link" href="#" id="painelControlLink" style="display: none;" onclick="navigateWithToken(event, '/nav/painelControl')">
+                    Painel
+                </a>
+                <a class="nav-link" href="/nav/logout" id="logoutLink" style="display: none;">
+                    Sair
+                </a>
+                <a class="nav-link" href="/nav/login" id="loginLink">
+                    Entrar
+                </a>
             </div>
         </div>
     </nav>
-    <div class="container mt-4">
-        <%- body %>
+    
+    <div style="padding-top: 70px;">
+        <div class="container">
+            <div class="main-content">
+                <%- body %>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -78,16 +92,16 @@
 
         function updateNav() {
             const token = localStorage.getItem('token');
-            const homeControlLink = document.getElementById('homeControlLink');
+            const painelControlLink = document.getElementById('painelControlLink');
             const logoutLink = document.getElementById('logoutLink');
             const loginLink = document.getElementById('loginLink');
 
             if (token) {
-                homeControlLink.style.display = 'block';
+                painelControlLink.style.display = 'block';
                 logoutLink.style.display = 'block';
                 loginLink.style.display = 'none';
             } else {
-                homeControlLink.style.display = 'none';
+                painelControlLink.style.display = 'none';
                 logoutLink.style.display = 'none';
                 loginLink.style.display = 'block';
             }

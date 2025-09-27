@@ -10,8 +10,7 @@ router.get('/login', navController.login);
 router.get('/logout', navController.logout);
 router.get('/redefinir_senha', navController.redefinir_senha);
 
-// Secção de controle do Home
-router.get('/home', navController.home);
-router.get('/homeControl', authMiddleware, navController.homeControl);
+// Secção de controle do Painel de controle
+router.get('/painelControl', authMiddleware, navController.painelControl);
 
 module.exports = router;

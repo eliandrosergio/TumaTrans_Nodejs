@@ -1,20 +1,57 @@
-<!DOCTYPE html>
-<h1 class="text-center">Bem-vindo à Plataforma de Gestão de Transporte Escolar</h1>
-<h4 class="text-center">Complexo Escolar Privado Beira Alta II</h4>
-<hr class="margin-top-50" style="margin-top: 30px;">
-<h5 class="text-center">O que deseja fazer hoje 🤔️?</h5>
+<div class="mb-4">
+    <h2>Centro de Controle</h2>
+    <p class="text-muted">Complexo Escolar Privado Tchiungo</p>
+</div>
 
-<div class="text-center mt-4">
-	<div class="menu-box-group">
-		<a class="btn btn-primary menu-box-element" href="#" onclick="navigateWithToken(event, '/api/alunos/ver')"> Ver Alunos Cadastrados 👀️</a>
-    	<a class="btn btn-primary menu-box-element" href="#" onclick="navigateWithToken(event, '/api/alunos/cadastro')">Cadastrar um Aluno ➕️</a>
-	</div>
-	<div class="menu-box-group">
-		<a class="btn btn-primary menu-box-element" href="#" onclick="navigateWithToken(event, '/api/motoristas/ver')"> Ver Motoristas Cadastrados 👀️</a>
-    	<a class="btn btn-primary menu-box-element" href="#" onclick="navigateWithToken(event, '/api/motoristas/cadastro')">Cadastrar um Motorista ➕️</a>
-	</div>
-	<div class="menu-box-group">
-		<a class="btn btn-primary menu-box-element" href="#" onclick="navigateWithToken(event, '/api/veiculos/ver')"> Ver Veículos Cadastrados 👀️</a>
-    	<a class="btn btn-primary menu-box-element" href="#" onclick="navigateWithToken(event, '/api/veiculos/cadastro')">Cadastrar um Veículo ➕️</a>
-	</div>
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <h5 class="mb-3">Alunos</h5>
+                <p class="text-muted mb-4">Gestão de estudantes</p>
+                <div class="d-grid gap-2">
+                    <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/alunos/ver')">
+                        Ver Lista
+                    </a>
+                    <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/alunos/cadastro')">
+                        Cadastrar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <h5 class="mb-3">Motoristas</h5>
+                <p class="text-muted mb-4">Gestão de condutores</p>
+                <div class="d-grid gap-2">
+                    <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/motoristas/ver')">
+                        Ver Lista
+                    </a>
+                    <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/motoristas/cadastro')">
+                        Cadastrar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <h5 class="mb-3">Veículos</h5>
+                <p class="text-muted mb-4">Gestão da frota</p>
+                <div class="d-grid gap-2">
+                    <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/veiculos/ver')">
+                        Ver Lista
+                    </a>
+                    <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/veiculos/cadastro')">
+                        Cadastrar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

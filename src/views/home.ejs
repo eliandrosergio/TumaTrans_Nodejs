@@ -1,12 +1,25 @@
+<div class="text-center">
+    <div class="mb-4">
+        <h1>Sistema de Gestão de Transporte Escolar</h1>
+        <p class="text-muted">Complexo Escolar Privado Tchiungo</p>
+    </div>
+    
+    <div class="card">
+        <div class="card-body p-5">
+            <p class="mb-4">Plataforma para gerenciamento do transporte escolar</p>
+            <a href="/nav/login" class="btn btn-primary">Fazer Login</a>
+        </div>
+    </div>
+</div>
+
 <script>
     // Verifica o estado do token, para redirecionar o usuário ao devido sitio
     function homeSelect() {
         const token = localStorage.getItem('token');
-        if (!token) {
-            window.location.href = '/nav/home';
-        } else {
-            navigateWithToken(event, '/nav/homeControl');
+        if (token) {
+            navigateWithToken(event, '/nav/painelControl');
         }
+        return ;
     }
 
 	// Executa ao carregar

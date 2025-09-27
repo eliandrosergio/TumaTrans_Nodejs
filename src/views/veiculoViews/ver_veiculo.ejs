@@ -1,16 +1,33 @@
-<!DOCTYPE html>
-<h2>Lista de Veiculos Cadastrados</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2>Veículos</h2>
+        <p class="text-muted mb-0">Lista de veículos cadastrados</p>
+    </div>
+    <button class="btn btn-outline-primary" onclick="carregarVeiculos()">Atualizar</button>
+</div>
+
 <div id="message" class="alert" style="display:none;"></div>
-<p style="margin: 12px 0px 6px 0px;"><a href="#" onclick="carregarVeiculos()">Atualizar Lista</a></p>
-<table class="table">
-	<thead>
-		<th>ID</th>
-		<th>Matricula do Veículo</th>
-		<th>Modelo do Veículo</th>
-		<th>Capacidade Principal</th>
-	</thead>
-	<tbody id="tableBody"></tbody>
-</table>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+					<th>Modelo do Veículo</th>
+					<th>Descrição do Veículo</th>
+					<th>Matricula do Veículo</th>
+					<th>Capacidade Principal</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr id="loadingRow">
+                    <td colspan="5" class="text-center py-3">Carregando...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script>
 	// Carrega a lista de veiculos
@@ -39,10 +56,11 @@
 						const element = result[i];
 						tableBody.innerHTML += `<tr id="colum${i}"></tr>`;
 						const atualColm = document.getElementById(`colum${i}`);
-						
-						atualColm.innerHTML += `<td>${element.id}</td>`;
-						atualColm.innerHTML += `<td>${element.matricula}</td>`;
-						atualColm.innerHTML += `<td>${element.modelo}</td>`;
+
+						atualColm.innerHTML += `<td><span class="badge bg-primary">${element.id}</span></td>`;
+						atualColm.innerHTML += `<td><strong>${element.modelo}</strong></td>`;
+						atualColm.innerHTML += `<td class="text-muted">${element.descricao}</td>`;
+						atualColm.innerHTML += `<td><span class="badge bg-secondary">${element.matricula}</span></td>`;
 						atualColm.innerHTML += `<td>${element.capacidade} Pessoa(s)</td>`;
 					}
 				}
