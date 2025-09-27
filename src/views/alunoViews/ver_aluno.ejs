@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<h2>Lista de Alunos Cadastrados</h2>
+<div id="message" class="alert" style="display:none;"></div>
+<p style="margin: 12px 0px 6px 0px;"><a href="#" onclick="carregarAlunos()">Atualizar Lista</a></p>
+<table class="table">
+	<thead>
+		<th>ID</th>
+		<th>Nome do Aluno</th>
+		<th>Idade do Aluno</th>
+		<th>Processo do Aluno</th>
+		<th>Endereço do Aluno</th>
+		<th>Contacto do Aluno</th>
+		<th>Contacto do Encarregado</th>
+	</thead>
+	<tbody id="tableBody"></tbody>
+</table>
+
+<script>
+	// Carrega a lista de alunos
+	async function carregarAlunos() {
+		const token = localStorage.getItem('token');
+        verificarToken(token);
+		try {
+			const response = await fetch('/api/alunos/list', {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			});
+			const result = await response.json();
+			const messageDiv = document.getElementById('message');
+
+			if (result.error) {
+				emitirMensagem(messageDiv, 'danger', result.error || 'Erro ao listar alunos.');
+			} else {
+				const tableBody = document.getElementById('tableBody');
+				tableBody.innerHTML = '';
+				if (result.length <= 0) {
+					emitirMensagem(messageDiv, 'warning', 'Não existe alunos cadastrados.');
+				} else {
+					for (let i = 0; i < result.length; i++) {
+						const element = result[i];
+						tableBody.innerHTML += `<tr id="colum${i}"></tr>`;
+						const atualColm = document.getElementById(`colum${i}`);
+						
+						atualColm.innerHTML += `<td>${element.id}</td>`;
+						atualColm.innerHTML += `<td>${element.nome}</td>`;
+						atualColm.innerHTML += `<td>${element.data_nascimento}</td>`;
+						atualColm.innerHTML += `<td>${element.num_processo}</td>`;
+						atualColm.innerHTML += `<td>${element.endereco}</td>`;
+						atualColm.innerHTML += `<td>${element.telefone_aluno}</td>`;
+						atualColm.innerHTML += `<td>${element.telefone_encarregado}</td>`;
+					}
+				}
+			}
+		} catch (err) {
+			console.error('Erro:', err);
+			const messageDiv = document.getElementById('message');
+			emitirMensagem(messageDiv, 'danger', 'Erro na conexão.');
+		}
+	}
+
+	// Executa ao carregar
+	document.addEventListener('DOMContentLoaded', carregarAlunos());
+</script>

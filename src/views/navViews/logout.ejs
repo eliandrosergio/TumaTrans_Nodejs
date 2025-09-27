@@ -1,0 +1,11 @@
+<script>
+	// Remove o token do localStorage, atualizar o nav de link e redireciona para a pagina home
+	function logoutSystem() {
+		localStorage.removeItem('token');
+		updateNav();
+		window.location.href = '/';
+	}
+
+	// Executa ao carregar
+	document.addEventListener('DOMContentLoaded', logoutSystem);
+</script>

@@ -1,0 +1,59 @@
+<h2>Login</h2>
+<div id="message" class="alert" style="display:none;"></div>
+<form id="loginForm" class="mt-3">
+    <div class="mb-3">
+        <label for="username" class="form-label">Usuário</label>
+        <input type="text" class="form-control" id="username" name="username" required>
+    </div>
+    <div class="mb-3 position-relative">
+        <label for="password" class="form-label">Senha</label>
+        <div class="input-group">
+            <input type="password" class="form-control" id="password" name="password" required>
+            <button type="button" id="togglePassword" class="btn btn-secondary translate-middle-y">Mostrar</button>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Entrar</button>
+</form>
+<p class="mt-2">Esqueceu a senha? <a href="/nav/redefinir_senha">Redefinir senha</a></p>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+        };
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            const messageDiv = document.getElementById('message');
+            if (response.ok) {
+                localStorage.setItem('token', result.token);
+                emitirMensagem(messageDiv, 'success', result.message);
+                window.location.href = '/';
+            } else {
+                emitirMensagem(messageDiv, 'danger', result.error);
+            }
+        } catch (err) {
+            console.error('Erro:', err);
+            emitirMensagem(messageDiv, 'danger', 'Erro na conexão.');
+        }
+    });
+
+    // Toggle para mostrar/esconder senha
+    document.getElementById('togglePassword').addEventListener('click', () => {
+        const passwordInput = document.getElementById('password');
+        const toggleBtn = document.getElementById('togglePassword');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleBtn.textContent = 'Esconder';
+        } else {
+            passwordInput.type = 'password';
+            toggleBtn.textContent = 'Mostrar';
+        }
+    });
+</script>

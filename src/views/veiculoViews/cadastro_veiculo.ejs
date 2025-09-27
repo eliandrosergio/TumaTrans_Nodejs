@@ -1,0 +1,53 @@
+<h2>Cadastrar Novo Veículo</h2>
+<div id="message" class="alert" style="display:none;"></div>
+<form id="veiculoForm" class="mt-3">
+    <div class="mb-3">
+        <label for="matricula" class="form-label">Matricula</label>
+        <input type="text" class="form-control" id="matricula" name="matricula" placeholder="Ex.: LD44EF88" required>
+    </div>
+    <div class="mb-3">
+        <label for="modelo" class="form-label">Modelo</label>
+        <input type="text" class="form-control" id="modelo" name="modelo" placeholder="Ex.: Hunday i10 Branco" required>
+    </div>
+    <div class="mb-3">
+        <label for="capacidade" class="form-label">Capacidade</label>
+        <input type="number" class="form-control" id="capacidade" name="capacidade" placeholder="Ex.: 20" required>
+    </div>
+    <button type="submit" class="btn btn-primary" style="margin-bottom: 20px;">Cadastrar</button>
+</form>
+
+<script>
+    document.getElementById('veiculoForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        verificarToken(token);
+        const data = {
+            matricula: document.getElementById('matricula').value,
+            modelo: document.getElementById('modelo').value,
+            capacidade: document.getElementById('capacidade').value
+        };
+        try {
+            const response = await fetch('/api/veiculos/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            const messageDiv = document.getElementById('message');
+            if (response.ok) {
+                emitirMensagem(messageDiv, 'success', result.message);
+            } else {
+                emitirMensagem(messageDiv, 'danger', result.error || 'Erro ao cadastrar.');
+            }
+            document.getElementById('veiculoForm').reset();
+        } catch (err) {
+            console.error('Erro:', err);
+            document.getElementById('message').textContent = 'Erro na conexão.';
+            document.getElementById('message').className = 'alert alert-danger';
+            document.getElementById('message').style.display = 'block';
+        }
+    });
+</script>

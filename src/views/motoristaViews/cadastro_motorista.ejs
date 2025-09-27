@@ -1,0 +1,58 @@
+<h2>Cadastrar Novo Motorista</h2>
+<div id="message" class="alert" style="display:none;"></div>
+<form id="motoristaForm" class="mt-3">
+    <div class="mb-3">
+        <label for="nome" class="form-label">Nome</label>
+        <input type="text" class="form-control" id="nome" name="nome" placeholder="Ex.: Eliandro Faustino" required>
+    </div>
+    <div class="mb-3">
+        <label for="endereco" class="form-label">Endereço</label>
+        <input type="text" class="form-control" id="endereco" name="endereco" placeholder="Ex.: Estalagem Moagem, Viana" required>
+    </div>
+    <div class="mb-3">
+        <label for="telefone" class="form-label">Telefone Principal</label>
+        <input type="number" class="form-control" id="telefone" name="telefone" placeholder="Ex.: 921345678" required>
+    </div>
+    <div class="mb-3">
+        <label for="telefone_emergencia" class="form-label">Telefone de Emergência</label>
+        <input type="number" class="form-control" id="telefone_emergencia" name="telefone_emergencia" placeholder="Ex.: 921345678" required>
+    </div>
+    <button type="submit" class="btn btn-primary" style="margin-bottom: 20px;">Cadastrar</button>
+</form>
+
+<script>
+    document.getElementById('motoristaForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        verificarToken(token);
+        const data = {
+            nome: document.getElementById('nome').value,
+            endereco: document.getElementById('endereco').value,
+            telefone: document.getElementById('telefone').value,
+            telefone_emergencia: document.getElementById('telefone_emergencia').value
+        };
+        try {
+            const response = await fetch('/api/motoristas/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            const messageDiv = document.getElementById('message');
+            if (response.ok) {
+                emitirMensagem(messageDiv, 'success', result.message);
+            } else {
+                emitirMensagem(messageDiv, 'danger', result.error || 'Erro ao cadastrar.');
+            }
+            document.getElementById('motoristaForm').reset();
+        } catch (err) {
+            console.error('Erro:', err);
+            document.getElementById('message').textContent = 'Erro na conexão.';
+            document.getElementById('message').className = 'alert alert-danger';
+            document.getElementById('message').style.display = 'block';
+        }
+    });
+</script>

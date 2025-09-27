@@ -1,0 +1,14 @@
+<script>
+    // Verifica o estado do token, para redirecionar o usuário ao devido sitio
+    function homeSelect() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = '/nav/home';
+        } else {
+            navigateWithToken(event, '/nav/homeControl');
+        }
+    }
+
+	// Executa ao carregar
+	document.addEventListener('DOMContentLoaded', homeSelect);
+</script>

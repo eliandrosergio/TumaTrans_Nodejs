@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<h2>Lista de Veiculos Cadastrados</h2>
+<div id="message" class="alert" style="display:none;"></div>
+<p style="margin: 12px 0px 6px 0px;"><a href="#" onclick="carregarVeiculos()">Atualizar Lista</a></p>
+<table class="table">
+	<thead>
+		<th>ID</th>
+		<th>Matricula do Veículo</th>
+		<th>Modelo do Veículo</th>
+		<th>Capacidade Principal</th>
+	</thead>
+	<tbody id="tableBody"></tbody>
+</table>
+
+<script>
+	// Carrega a lista de veiculos
+	async function carregarVeiculos() {
+		const token = localStorage.getItem('token');
+        verificarToken(token);
+		try {
+			const response = await fetch('/api/veiculos/list', {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			});
+			const result = await response.json();
+			const messageDiv = document.getElementById('message');
+
+			if (result.error) {
+				emitirMensagem(messageDiv, 'danger', result.error || 'Erro ao listar veiculos.');
+			} else {
+				const tableBody = document.getElementById('tableBody');
+				tableBody.innerHTML = '';
+				if (result.length <= 0) {
+					emitirMensagem(messageDiv, 'warning', 'Não existe veiculos cadastrados.');
+				} else {
+					for (let i = 0; i < result.length; i++) {
+						const element = result[i];
+						tableBody.innerHTML += `<tr id="colum${i}"></tr>`;
+						const atualColm = document.getElementById(`colum${i}`);
+						
+						atualColm.innerHTML += `<td>${element.id}</td>`;
+						atualColm.innerHTML += `<td>${element.matricula}</td>`;
+						atualColm.innerHTML += `<td>${element.modelo}</td>`;
+						atualColm.innerHTML += `<td>${element.capacidade} Pessoa(s)</td>`;
+					}
+				}
+			}
+		} catch (err) {
+			console.error('Erro:', err);
+			const messageDiv = document.getElementById('message');
+			emitirMensagem(messageDiv, 'danger', 'Erro na conexão.');
+		}
+	}
+
+	// Executa ao carregar
+	document.addEventListener('DOMContentLoaded', carregarVeiculos());
+</script>
