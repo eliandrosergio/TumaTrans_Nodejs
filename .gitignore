@@ -1,3 +1,4 @@
+src/_tests
 src/node_modules
 src/db.sqlite
 src/.env
