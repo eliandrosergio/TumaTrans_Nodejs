@@ -175,7 +175,7 @@ O Sistema de Gestão de Transporte Escolar é uma aplicação web full-stack pro
 
 Antes de começar, você precisa ter instalado em sua máquina:
 
-- **Node.js** (versão 14 ou superior) - [Download](https://nodejs.org/)
+- **Node.js** (versão v18 ou superior, usei a v22.12.0) - [Download](https://nodejs.org/)
 - **npm** ou **yarn** (gerenciador de pacotes)
 - **Git** - [Download](https://git-scm.com/)
 
