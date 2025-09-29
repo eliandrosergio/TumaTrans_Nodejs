@@ -33,23 +33,23 @@ app.set('views', './views'); // Pasta para templates
 app.set('layout', 'layouts/main'); // Layout padrão
 
 // Rotas (já existentes)
-const authRoutes = require('./routes/authRoutes');
-const alunoRoutes = require('./routes/alunoRoutes');
-const motoristaRoutes = require('./routes/motoristaRoutes');
-const rotaRoutes = require('./routes/rotaRoutes');
-const veiculoRoutes = require('./routes/veiculoRoutes');
-const navRoutes = require('./routes/navRoutes');
 const relatorioRoutes = require('./routes/relatorioRoutes');
+const motoristaRoutes = require('./routes/motoristaRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
+const veiculoRoutes = require('./routes/veiculoRoutes');
+const alunoRoutes = require('./routes/alunoRoutes');
+const authRoutes = require('./routes/authRoutes');
+const rotaRoutes = require('./routes/rotaRoutes');
+const navRoutes = require('./routes/navRoutes');
 
-app.use('/api/auth', authRoutes);
-app.use('/api/alunos', alunoRoutes);
 app.use('/api/motoristas', motoristaRoutes);
-app.use('/api/rotas', rotaRoutes);
-app.use('/api/veiculos', veiculoRoutes);
-app.use('/nav', navRoutes);
 app.use('/api/relatorios', relatorioRoutes);
+app.use('/api/veiculos', veiculoRoutes);
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/alunos', alunoRoutes);
+app.use('/api/rotas', rotaRoutes);
+app.use('/api/auth', authRoutes);
+app.use('', navRoutes);
 
 // Rota inicial
 app.get('/', (req, res) => {

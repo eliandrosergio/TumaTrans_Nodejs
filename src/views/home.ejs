@@ -7,7 +7,7 @@
     <div class="card">
         <div class="card-body p-5">
             <p class="mb-4">Plataforma para gerenciamento do transporte escolar</p>
-            <a href="/nav/login" class="btn btn-primary">Fazer Login</a>
+            <a href="/login" class="btn btn-primary">Fazer Login</a>
         </div>
     </div>
 </div>
@@ -17,7 +17,7 @@
     function homeSelect() {
         const token = localStorage.getItem('token');
         if (token) {
-            navigateWithToken(event, '/nav/painelControl');
+            navigateWithToken(event, '/painelControl');
         }
         return ;
     }

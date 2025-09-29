@@ -16,13 +16,13 @@
                 <i class="bi bi-bus-front me-2"></i>Gestão de Transporte
             </a>
             <div class="navbar-nav ms-auto d-flex flex-row" id="navLinks">
-                <a class="nav-link" href="#" id="painelControlLink" style="display: none;" onclick="navigateWithToken(event, '/nav/painelControl')">
+                <a class="nav-link" href="#" id="painelControlLink" style="display: none;" onclick="navigateWithToken(event, '/painelControl')">
                     Painel
                 </a>
-                <a class="nav-link" href="/nav/logout" id="logoutLink" style="display: none;">
+                <a class="nav-link" href="/logout" id="logoutLink" style="display: none;">
                     Sair
                 </a>
-                <a class="nav-link" href="/nav/login" id="loginLink">
+                <a class="nav-link" href="/login" id="loginLink">
                     Entrar
                 </a>
             </div>
@@ -102,7 +102,7 @@
             const token = localStorage.getItem('token');
             if (!token) {
                 alert('Faça login primeiro');
-                window.location.href = '/nav/login';
+                window.location.href = '/login';
                 return;
             }
             // Define o cookie e navega normalmente
