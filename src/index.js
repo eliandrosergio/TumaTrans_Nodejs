@@ -1,12 +1,16 @@
 // index.js - Servidor principal com EJS e rotas
 
-// Variáveis
+// Variáveis de libs locais
 const express = require('express');
 const app = express();
 const dotenv = require('dotenv');
 const { sequelize } = require('./models');
 const cookieParser = require('cookie-parser'); // Para ler cookies
 const expressLayouts = require('express-ejs-layouts');
+
+// Variáveis de arquivos locais
+const logAction = require('./middlewares/logMiddleware');
+const { agendarBackup } = require('./utils/backup');
 
 // Carrega variáveis de ambiente
 dotenv.config();
@@ -36,6 +40,7 @@ const rotaRoutes = require('./routes/rotaRoutes');
 const veiculoRoutes = require('./routes/veiculoRoutes');
 const navRoutes = require('./routes/navRoutes');
 const relatorioRoutes = require('./routes/relatorioRoutes');
+const usuarioRoutes = require('./routes/usuarioRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/alunos', alunoRoutes);
@@ -44,6 +49,7 @@ app.use('/api/rotas', rotaRoutes);
 app.use('/api/veiculos', veiculoRoutes);
 app.use('/nav', navRoutes);
 app.use('/api/relatorios', relatorioRoutes);
+app.use('/api/usuarios', usuarioRoutes);
 
 // Rota inicial
 app.get('/', (req, res) => {
@@ -58,6 +64,10 @@ sequelize.sync({ force: false }) // Use force: true só se quiser recriar
     .catch(err => {
         console.error('Erro ao sincronizar BD:', err);
     });
+
+// Aciona o Sistema de Backup Automático do BD:
+agendarBackup();
+console.log('Sistema de backup automático ativado.');
 
 // Inicia servidor HTTPS
 app.listen(PORT, () => {

@@ -210,6 +210,10 @@
         function editarRota(id) {
             navigateWithToken(event, `/api/rotas/editar?id=${id}`);
         }
+
+        function editarUsuario(id) {
+            navigateWithToken(event, `/api/usuarios/editar?id=${id}`);
+        }
         
         // Inicializa a navegação ao carregar a página e ao mudar o localStorage
         document.addEventListener('DOMContentLoaded', updateNav);

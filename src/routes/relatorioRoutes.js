@@ -17,6 +17,9 @@ router.get('/ver', authMiddleware, (req, res) => {
     res.render('relatorioViews/ver_relatorios', { title: 'Relatórios' });
 });
 
+// Logs de atividades
+router.get('/logs', authMiddleware, relatorioController.logs);
+
 router.get('/alunos-rota', authMiddleware, (req, res) => {
     res.render('relatorioViews/alunos_por_rota', { title: 'Alunos por Rota' });
 });

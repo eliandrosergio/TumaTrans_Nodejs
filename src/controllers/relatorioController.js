@@ -71,3 +71,21 @@ exports.alunosPorRota = async (req, res) => {
         res.status(500).json({ error: 'Erro ao gerar relatório.' });
     }
 };
+
+exports.logs = async (req, res) => {
+    try {
+        const { Log, Usuario } = require('../models');
+        const logs = await Log.findAll({
+            include: [{
+                model: Usuario,
+                as: 'usuario',
+                attributes: ['id', 'username']
+            }],
+            order: [['createdAt', 'DESC']],
+            limit: 100
+        });
+        res.json(logs);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao buscar logs.' });
+    }
+};

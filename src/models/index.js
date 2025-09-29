@@ -6,9 +6,10 @@ const Motorista = require('./Motorista');
 const Rota = require('./Rota');
 const Veiculo = require('./Veiculo');
 const Usuario = require('./Usuario');
+const Log = require('./Log');
 
 // Criar as associações
-const models = { Aluno, Motorista, Rota, Veiculo, Usuario };
+const models = { Aluno, Motorista, Rota, Veiculo, Usuario, Log };
 
 // Executar associações se existirem
 Object.keys(models).forEach(modelName => {
