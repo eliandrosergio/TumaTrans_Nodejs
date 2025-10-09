@@ -16,8 +16,7 @@ const Usuario = sequelize.define('Usuario', {
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
+        allowNull: true,
         validate: { isEmail: true }
     },
     password: {
@@ -27,6 +26,10 @@ const Usuario = sequelize.define('Usuario', {
     nivel: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    vinculo_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true, 
     },
 }, {
     tableName: 'usuarios',

@@ -17,7 +17,7 @@
 
                 <div class="col-md-6">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email">
                 </div>
 
                 <div class="col-md-6">
@@ -49,6 +49,13 @@
                         <option value="gerente">Gerente</option>
                         <option value="aluno">Aluno</option>
                         <option value="motorista">Motorista</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6" id="vinculoContainer" style="display:none;">
+                    <label for="vinculo_id" class="form-label">Vínculo</label>
+                    <select class="form-control" id="vinculo_id" name="vinculo_id">
+                        <option value="">Selecione...</option>
                     </select>
                 </div>
             </div>
@@ -90,6 +97,40 @@
         }
     });
 
+    // Mostrar campo de vínculo apenas para aluno e motorista
+    document.getElementById('nivel').addEventListener('change', async function() {
+        const nivel = this.value;
+        const vinculoContainer = document.getElementById('vinculoContainer');
+        const vinculoSelect = document.getElementById('vinculo_id');
+        
+        if (nivel === 'aluno' || nivel === 'motorista') {
+            vinculoContainer.style.display = 'block';
+            vinculoSelect.required = true;
+            
+            const token = localStorage.getItem('token');
+            const endpoint = nivel === 'aluno' ? '/api/alunos/list' : '/api/motoristas/list';
+            
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const dados = await response.json();
+                
+                vinculoSelect.innerHTML = '<option value="">Selecione...</option>';
+                dados.forEach(item => {
+                    vinculoSelect.innerHTML += `<option value="${item.id}">${item.nome}</option>`;
+                });
+            } catch (err) {
+                console.error('Erro ao carregar vínculos:', err);
+            }
+        } else {
+            vinculoContainer.style.display = 'none';
+            vinculoSelect.required = false;
+            vinculoSelect.value = '';
+        }
+    });
+
     document.getElementById('usuarioForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         
@@ -108,7 +149,8 @@
             username: document.getElementById('username').value,
             email: document.getElementById('email').value,
             password: password,
-            nivel: document.getElementById('nivel').value
+            nivel: document.getElementById('nivel').value,
+            vinculo_id: document.getElementById('vinculo_id').value || null
         };
         
         try {

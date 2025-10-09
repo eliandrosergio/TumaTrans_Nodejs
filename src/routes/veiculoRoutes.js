@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const veiculoController = require('../controllers/veiculoController');
 const authMiddleware = require('../middlewares/authMiddleware');
+const { podeAdicionar, podeDeletar } = require('../middlewares/permissaoMiddleware');
 
 // Rotas de formulários (devem vir antes das rotas com parâmetros)
 router.get('/cadastro', authMiddleware, veiculoController.formCreate);
@@ -12,11 +13,11 @@ router.get('/editar', authMiddleware, veiculoController.formEdit);
 
 // Rotas de operações
 router.post('/list', authMiddleware, veiculoController.list);
-router.post('/create', authMiddleware, veiculoController.create);
+router.post('/create', authMiddleware, podeAdicionar, veiculoController.create);
 
 // Rotas com parâmetros (devem vir por último)
 router.get('/:id', authMiddleware, veiculoController.findById);
 router.put('/:id', authMiddleware, veiculoController.update);
-router.delete('/:id', authMiddleware, veiculoController.delete);
+router.delete('/:id', authMiddleware, podeDeletar, veiculoController.delete);
 
 module.exports = router;

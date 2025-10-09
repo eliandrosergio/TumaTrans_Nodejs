@@ -52,6 +52,8 @@
 				if (result.length <= 0) {
 					emitirMensagem(messageDiv, 'warning', 'Não existe motoristas cadastrados.');
 				} else {
+					const podeEditar = podeEditarDeletar();
+					
 					for (let i = 0; i < result.length; i++) {
 						const element = result[i];
 						tableBody.innerHTML += `<tr id="colum${i}"></tr>`;
@@ -62,15 +64,20 @@
 						atualColm.innerHTML += `<td class="text-muted">${element.endereco}</td>`;
 						atualColm.innerHTML += `<td>${element.telefone}</td>`;
 						atualColm.innerHTML += `<td class="text-muted">${element.telefone_emergencia}</td>`;
-						atualColm.innerHTML += `
-							<td>
-								<button class="btn btn-sm btn-outline-primary me-1" onclick="editarMotorista(${element.id})" title="Editar">
-									<i class="bi bi-pencil"></i>
-								</button>
-								<button class="btn btn-sm btn-outline-danger" onclick="confirmarDelete(${element.id}, 'motorista')" title="Excluir">
-									<i class="bi bi-trash"></i>
-								</button>
-							</td>`;
+						
+						if (podeEditar) {
+							atualColm.innerHTML += `
+								<td>
+									<button class="btn btn-sm btn-outline-primary me-1" onclick="editarMotorista(${element.id})" title="Editar">
+										<i class="bi bi-pencil"></i>
+									</button>
+									<button class="btn btn-sm btn-outline-danger" onclick="confirmarDelete(${element.id}, 'motorista')" title="Excluir">
+										<i class="bi bi-trash"></i>
+									</button>
+								</td>`;
+						} else {
+							atualColm.innerHTML += `<td>-</td>`;
+						}
 					}
 				}
 			}
@@ -78,6 +85,19 @@
 			console.error('Erro:', err);
 			const messageDiv = document.getElementById('message');
 			emitirMensagem(messageDiv, 'danger', 'Erro na conexão.');
+		}
+	}
+
+	// Função para verificar se pode editar/deletar
+	function podeEditarDeletar() {
+		const token = localStorage.getItem('token');
+		if (!token) return false;
+		
+		try {
+			const payload = JSON.parse(atob(token.split('.')[1]));
+			return payload.nivel === 'admin' || payload.nivel === 'gerente';
+		} catch (e) {
+			return false;
 		}
 	}
 

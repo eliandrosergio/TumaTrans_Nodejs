@@ -23,7 +23,7 @@ const Motorista = sequelize.define('Motorista', {
     },
     telefone_emergencia: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
 }, {
     tableName: 'motoristas',

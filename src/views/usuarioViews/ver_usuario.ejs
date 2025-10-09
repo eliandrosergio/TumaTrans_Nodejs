@@ -51,6 +51,8 @@
                 if (result.length <= 0) {
                     emitirMensagem(messageDiv, 'warning', 'Não existem usuários cadastrados.');
                 } else {
+                    const nivelUsuario = getNivelUsuario();
+                    
                     for (let i = 0; i < result.length; i++) {
                         const element = result[i];
                         const dataCadastro = new Date(element.createdAt).toLocaleDateString('pt-PT');
@@ -59,18 +61,27 @@
                         
                         atualColm.innerHTML += `<td><span class="badge bg-primary">${element.id}</span></td>`;
                         atualColm.innerHTML += `<td><strong>${element.username}</strong></td>`;
-                        atualColm.innerHTML += `<td>${element.email}</td>`;
+                        atualColm.innerHTML += `<td>${element.email || 'N/A'}</td>`;
                         atualColm.innerHTML += `<td><span class="badge bg-${element.nivel === 'admin' ? 'danger' : 'secondary'}">${element.nivel}</span></td>`;
                         atualColm.innerHTML += `<td class="text-muted">${dataCadastro}</td>`;
-                        atualColm.innerHTML += `
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editarUsuario(${element.id})" title="Editar">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="confirmarDelete(${element.id}, 'usuario')" title="Excluir">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </td>`;
+                        
+                        // Admin pode editar/deletar todos
+                        // Gerente só pode editar/deletar aluno e motorista
+                        const podeEditar = podeEditarUsuario(nivelUsuario, element.nivel);
+                        
+                        if (podeEditar) {
+                            atualColm.innerHTML += `
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editarUsuario(${element.id})" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="confirmarDelete(${element.id}, 'usuario')" title="Excluir">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>`;
+                        } else {
+                            atualColm.innerHTML += `<td>-</td>`;
+                        }
                     }
                 }
             }
@@ -79,6 +90,33 @@
             const messageDiv = document.getElementById('message');
             emitirMensagem(messageDiv, 'danger', 'Erro na conexão.');
         }
+    }
+
+    // Função para obter nível do usuário
+    function getNivelUsuario() {
+        const token = localStorage.getItem('token');
+        if (!token) return null;
+        
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.nivel;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // Função para verificar se pode editar/deletar um usuário específico
+    function podeEditarUsuario(nivelUsuario, nivelAlvo) {
+        if (nivelUsuario === 'admin') {
+            return true; // Admin pode tudo
+        }
+        
+        if (nivelUsuario === 'gerente') {
+            // Gerente só pode editar aluno e motorista
+            return nivelAlvo === 'aluno' || nivelAlvo === 'motorista';
+        }
+        
+        return false;
     }
 
     document.addEventListener('DOMContentLoaded', carregarUsuarios());

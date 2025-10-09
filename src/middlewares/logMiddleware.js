@@ -1,3 +1,5 @@
+// middlewares/logMiddleware.js - Sistema de systems logs 
+
 const { Log } = require('../models');
 
 const logAction = (acao, tabela) => {

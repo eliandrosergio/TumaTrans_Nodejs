@@ -24,7 +24,7 @@ const Aluno = sequelize.define('Aluno', {
     },
     telefone_aluno: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
     },
     telefone_encarregado: {
         type: DataTypes.STRING,

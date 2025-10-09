@@ -1,3 +1,5 @@
+// middlewares/validationMiddleware.js - Valida os dados recebidos
+
 const validarAluno = (req, res, next) => {
     const { nome, num_processo, endereco, telefone_aluno, telefone_encarregado, data_nascimento } = req.body;
     
@@ -9,7 +11,7 @@ const validarAluno = (req, res, next) => {
         return res.status(400).json({ error: 'Número do processo é obrigatório.' });
     }
     
-    if (!telefone_aluno || !/^\d{9,15}$/.test(telefone_aluno.replace(/\D/g, ''))) {
+    if (telefone_aluno && telefone_aluno.trim() !== '' && !/^\d{9,15}$/.test(telefone_aluno.replace(/\D/g, ''))) {
         return res.status(400).json({ error: 'Telefone do aluno inválido.' });
     }
     
@@ -39,8 +41,8 @@ const validarMotorista = (req, res, next) => {
     if (!telefone || !/^\d{9,15}$/.test(telefone.replace(/\D/g, ''))) {
         return res.status(400).json({ error: 'Telefone inválido.' });
     }
-    
-    if (!telefone_emergencia || !/^\d{9,15}$/.test(telefone_emergencia.replace(/\D/g, ''))) {
+
+    if (telefone_emergencia && telefone_emergencia.trim() !== '' && !/^\d{9,15}$/.test(telefone_emergencia.replace(/\D/g, ''))) {
         return res.status(400).json({ error: 'Telefone de emergência inválido.' });
     }
     

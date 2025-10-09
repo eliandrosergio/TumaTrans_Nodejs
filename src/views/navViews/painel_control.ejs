@@ -146,6 +146,75 @@
     </div>
 
     <script>
+        // Função para obter nível do usuário do token
+        function getNivelUsuario() {
+            const token = localStorage.getItem('token');
+            if (!token) return null;
+            
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.nivel;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Função para mostrar/ocultar seções baseado no nível
+        function aplicarPermissoes() {
+            const nivel = getNivelUsuario();
+            
+            if (!nivel) {
+                window.location.href = '/login';
+                return;
+            }
+
+            // Seleciona todas as cards do painel
+            const cardAlunos = document.querySelector('.col-md-4:nth-child(1)');
+            const cardMotoristas = document.querySelector('.col-md-4:nth-child(2)');
+            const cardVeiculos = document.querySelector('.col-md-4:nth-child(3)');
+            const cardRotas = document.querySelector('.col-md-4:nth-child(4)');
+            const cardUsuarios = document.querySelector('.col-md-4:nth-child(5)');
+            const cardRelatorios = document.querySelector('.col-md-4:nth-child(6)');
+
+            // Admin e Gerente veem tudo
+            if (nivel === 'admin' || nivel === 'gerente') {
+                return; // Mostra tudo
+            }
+
+            // Motorista: vê apenas alunos, veículos e rotas (sem botão cadastrar)
+            if (nivel === 'motorista') {
+                // Oculta usuários e relatórios
+                if (cardUsuarios) cardUsuarios.style.display = 'none';
+                if (cardRelatorios) cardRelatorios.style.display = 'none';
+                
+                // Remove botões de cadastrar
+                removerBotaoCadastrar(cardAlunos);
+                removerBotaoCadastrar(cardMotoristas);
+                removerBotaoCadastrar(cardVeiculos);
+                removerBotaoCadastrar(cardRotas);
+            }
+
+            // Aluno: vê apenas alunos, motoristas, veículos e rotas (sem botão cadastrar)
+            if (nivel === 'aluno') {
+                // Oculta usuários e relatórios
+                if (cardUsuarios) cardUsuarios.style.display = 'none';
+                if (cardRelatorios) cardRelatorios.style.display = 'none';
+                
+                // Remove botões de cadastrar
+                removerBotaoCadastrar(cardAlunos);
+                removerBotaoCadastrar(cardMotoristas);
+                removerBotaoCadastrar(cardVeiculos);
+                removerBotaoCadastrar(cardRotas);
+            }
+        }
+
+        // Função auxiliar para remover botão de cadastrar
+        function removerBotaoCadastrar(card) {
+            if (!card) return;
+            const btnCadastrar = card.querySelector('.btn-outline-primary');
+            if (btnCadastrar) btnCadastrar.style.display = 'none';
+        }
+
         // Carregar estatísticas do dashboard
         async function carregarEstatisticas() {
             const token = localStorage.getItem('token');
@@ -164,6 +233,9 @@
             }
         }
         
-        document.addEventListener('DOMContentLoaded', carregarEstatisticas);
+        document.addEventListener('DOMContentLoaded', () => {
+            aplicarPermissoes();
+            carregarEstatisticas();
+        });
     </script>
 </div>

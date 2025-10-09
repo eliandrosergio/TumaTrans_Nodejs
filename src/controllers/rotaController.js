@@ -8,26 +8,42 @@ const { Motorista } = require('../models');
 // Listar todos
 exports.list = async (req, res) => {
     try {
-        const rotas = await Rota.findAll({
-            include: [
-                {
-                    model: Motorista,
-                    as: 'motorista',
-                    attributes: ['id', 'nome']
-                },
-                {
-                    model: Veiculo,
-                    as: 'veiculo',
-                    attributes: ['id', 'modelo', 'matricula']
-                },
-                {
-                    model: Aluno,
-                    as: 'alunos',
-                    attributes: ['id', 'nome']
-                }
-            ]
-        });
-        res.json(rotas);
+        const nivel = req.user.nivel;
+        const vinculoId = req.user.vinculo_id;
+        let rotas;
+
+        if (nivel === 'admin' || nivel === 'gerente') {
+            rotas = await Rota.findAll({
+                include: [
+                    { model: Motorista, as: 'motorista', attributes: ['id', 'nome'] },
+                    { model: Veiculo, as: 'veiculo', attributes: ['id', 'modelo', 'matricula'] },
+                    { model: Aluno, as: 'alunos', attributes: ['id', 'nome'] }
+                ]
+            });
+        } else if (nivel === 'motorista') {
+            rotas = await Rota.findAll({
+                where: { motorista_id: vinculoId },
+                include: [
+                    { model: Motorista, as: 'motorista', attributes: ['id', 'nome'] },
+                    { model: Veiculo, as: 'veiculo', attributes: ['id', 'modelo', 'matricula'] },
+                    { model: Aluno, as: 'alunos', attributes: ['id', 'nome'] }
+                ]
+            });
+        } else if (nivel === 'aluno') {
+            const aluno = await Aluno.findByPk(vinculoId);
+            if (aluno && aluno.rota_id) {
+                rotas = await Rota.findAll({
+                    where: { id: aluno.rota_id },
+                    include: [
+                        { model: Motorista, as: 'motorista', attributes: ['id', 'nome'] },
+                        { model: Veiculo, as: 'veiculo', attributes: ['id', 'modelo', 'matricula'] },
+                        { model: Aluno, as: 'alunos', attributes: ['id', 'nome'] }
+                    ]
+                });
+            }
+        }
+
+        res.json(rotas || []);
     } catch (err) {
         res.status(500).json({ error: 'Erro ao listar rotas.' });
     }

@@ -5,8 +5,26 @@ const { Motorista } = require('../models');
 // Listar todos
 exports.list = async (req, res) => {
     try {
-        const motoristas = await Motorista.findAll();
-        res.json(motoristas);
+        const nivel = req.user.nivel;
+        const vinculoId = req.user.vinculo_id;
+        let motoristas;
+
+        if (nivel === 'admin' || nivel === 'gerente') {
+            motoristas = await Motorista.findAll();
+        } else if (nivel === 'motorista') {
+            motoristas = await Motorista.findAll({ where: { id: vinculoId } });
+        } else if (nivel === 'aluno') {
+            const { Aluno, Rota } = require('../models');
+            const aluno = await Aluno.findByPk(vinculoId);
+            if (aluno && aluno.rota_id) {
+                const rota = await Rota.findByPk(aluno.rota_id);
+                if (rota) {
+                    motoristas = await Motorista.findAll({ where: { id: rota.motorista_id } });
+                }
+            }
+        }
+
+        res.json(motoristas || []);
     } catch (err) {
         res.status(500).json({ error: 'Erro ao listar motoristas.' });
     }
@@ -48,7 +66,15 @@ exports.findById = async (req, res) => {
 // Atualizar
 exports.update = async (req, res) => {
     try {
-        const [updated] = await Motorista.update(req.body, { where: { id: req.params.id } });
+        const nivel = req.user.nivel;
+        const vinculoId = req.user.vinculo_id;
+        const motoristaId = req.params.id;
+
+        if (nivel === 'motorista' && vinculoId != motoristaId) {
+            return res.status(403).json({ error: 'Você só pode editar seus próprios dados.' });
+        }
+
+        const [updated] = await Motorista.update(req.body, { where: { id: motoristaId } });
         if (!updated) {
             return res.status(404).json({ error: 'Motorista não encontrado.' });
         }

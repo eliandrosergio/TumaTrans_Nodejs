@@ -5,8 +5,29 @@ const { Veiculo } = require('../models');
 // Listar todos
 exports.list = async (req, res) => {
     try {
-        const veiculo = await Veiculo.findAll();
-        res.json(veiculo);
+        const nivel = req.user.nivel;
+        const vinculoId = req.user.vinculo_id;
+        let veiculos;
+
+        if (nivel === 'admin' || nivel === 'gerente') {
+            veiculos = await Veiculo.findAll();
+        } else if (nivel === 'motorista') {
+            const { Rota } = require('../models');
+            const rotas = await Rota.findAll({ where: { motorista_id: vinculoId } });
+            const veiculoIds = rotas.map(r => r.veiculo_id);
+            veiculos = await Veiculo.findAll({ where: { id: veiculoIds } });
+        } else if (nivel === 'aluno') {
+            const { Aluno, Rota } = require('../models');
+            const aluno = await Aluno.findByPk(vinculoId);
+            if (aluno && aluno.rota_id) {
+                const rota = await Rota.findByPk(aluno.rota_id);
+                if (rota) {
+                    veiculos = await Veiculo.findAll({ where: { id: rota.veiculo_id } });
+                }
+            }
+        }
+
+        res.json(veiculos || []);
     } catch (err) {
         res.status(500).json({ error: 'Erro ao listar veiculos.' });
     }

@@ -60,6 +60,8 @@
                 emitirMensagem(messageDiv, 'warning', 'Não existem rotas cadastradas.');
                 tableBody.innerHTML = '<tr><td colspan="9" class="text-center">Nenhuma rota encontrada.</td></tr>';
             } else {
+                const podeEditar = podeEditarDeletar();
+                
                 result.forEach((element, i) => {
                     tableBody.innerHTML += `<tr id="colum${i}"></tr>`;
                     const atualColm = document.getElementById(`colum${i}`);
@@ -72,15 +74,20 @@
                     atualColm.innerHTML += `<td><a href="#" onclick="navigateWithToken(event, '/api/motoristas/ver')" class="table-link text-primary">${element.motorista?.id + ". " + element.motorista?.nome || 'N/A'}</a></td>`;
                     atualColm.innerHTML += `<td><a href="#" onclick="navigateWithToken(event, '/api/veiculos/ver')" class="table-link text-primary">${element.veiculo?.id + ". " + element.veiculo?.modelo || 'N/A'}</a></td>`;
                     atualColm.innerHTML += `<td class="text-muted">${element.pontos_parada}</td>`;
-                    atualColm.innerHTML += `
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editarRota(${element.id})" title="Editar">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="confirmarDelete(${element.id}, 'rota')" title="Excluir">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>`;
+                    
+                    if (podeEditar) {
+                        atualColm.innerHTML += `
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editarRota(${element.id})" title="Editar">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="confirmarDelete(${element.id}, 'rota')" title="Excluir">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>`;
+                    } else {
+                        atualColm.innerHTML += `<td>-</td>`;
+                    }
                 });
             }
         } catch (err) {
@@ -89,6 +96,19 @@
             emitirMensagem(messageDiv, 'danger', 'Erro na conexão.');
             const tableBody = document.getElementById('tableBody');
             tableBody.innerHTML = '<tr><td colspan="9" class="text-center">Erro ao carregar rotas.</td></tr>';
+        }
+    }
+
+    // Função para verificar se pode editar/deletar
+    function podeEditarDeletar() {
+        const token = localStorage.getItem('token');
+        if (!token) return false;
+        
+        try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.nivel === 'admin' || payload.nivel === 'gerente';
+        } catch (e) {
+            return false;
         }
     }
 
