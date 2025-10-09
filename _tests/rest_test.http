@@ -1,0 +1,317 @@
+### 1. Registrar Usuário Admin (para começar)
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "email": "admin@escola.ao",
+  "password": "admin123456",
+  "nivel": "admin"
+}
+
+### 2. Login Admin
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123456"
+}
+
+### COPIE O TOKEN ACIMA E COLE EM TODAS AS REQUISIÇÕES ABAIXO NO LUGAR DE eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+### 3. Cadastrar Motorista 1
+POST http://localhost:3000/api/motoristas/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "nome": "João Manuel Silva",
+  "endereco": "Rua das Acácias, Luanda",
+  "telefone": "923456789",
+  "telefone_emergencia": "923456790"
+}
+
+### 4. Cadastrar Motorista 2
+POST http://localhost:3000/api/motoristas/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "nome": "Pedro António Costa",
+  "endereco": "Avenida 4 de Fevereiro, Luanda",
+  "telefone": "924567890",
+  "telefone_emergencia": "924567891"
+}
+
+### 5. Cadastrar Veículo 1
+POST http://localhost:3000/api/veiculos/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "matricula": "LD-12-34-AB",
+  "modelo": "Toyota Hiace",
+  "descricao": "Minibus branco 15 lugares",
+  "capacidade": 15
+}
+
+### 6. Cadastrar Veículo 2
+POST http://localhost:3000/api/veiculos/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "matricula": "LD-56-78-CD",
+  "modelo": "Mercedes Sprinter",
+  "descricao": "Minibus azul 20 lugares",
+  "capacidade": 20
+}
+
+### 7. Cadastrar Rota 1
+POST http://localhost:3000/api/rotas/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "nome": "Rota Centro-Sul",
+  "descricao": "Rota que passa pelo centro e bairros do sul",
+  "horario_inicio": "07:00",
+  "horario_fim": "08:30",
+  "pontos_parada": "Escola, Centro, Maianga, Alvalade",
+  "motorista_id": 1,
+  "veiculo_id": 1
+}
+
+### 8. Cadastrar Rota 2
+POST http://localhost:3000/api/rotas/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "nome": "Rota Norte",
+  "descricao": "Rota que atende os bairros do norte",
+  "horario_inicio": "07:30",
+  "horario_fim": "09:00",
+  "pontos_parada": "Escola, Cazenga, Sambizanga, Rangel",
+  "motorista_id": 2,
+  "veiculo_id": 2
+}
+
+### 9. Cadastrar Aluno 1
+POST http://localhost:3000/api/alunos/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "nome": "Maria José Francisco",
+  "num_processo": "2024001",
+  "endereco": "Rua da Liberdade, Maianga",
+  "telefone_aluno": "925678901",
+  "telefone_encarregado": "925678902",
+  "data_nascimento": "2010-03-15"
+}
+
+### 10. Cadastrar Aluno 2
+POST http://localhost:3000/api/alunos/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "nome": "Carlos Alberto Neto",
+  "num_processo": "2024002",
+  "endereco": "Avenida Brasil, Sambizanga",
+  "telefone_aluno": "926789012",
+  "telefone_encarregado": "926789013",
+  "data_nascimento": "2011-07-22"
+}
+
+### 11. Criar Usuário Motorista 1
+POST http://localhost:3000/api/usuarios/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "username": "joao.motorista",
+  "email": "joao@escola.ao",
+  "password": "senha12345678",
+  "nivel": "motorista",
+  "vinculo_id": 1
+}
+
+### 12. Criar Usuário Motorista 2
+POST http://localhost:3000/api/usuarios/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "username": "pedro.motorista",
+  "email": "pedro@escola.ao",
+  "password": "senha12345678",
+  "nivel": "motorista",
+  "vinculo_id": 2
+}
+
+### 13. Criar Usuário Aluno 1
+POST http://localhost:3000/api/usuarios/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "username": "maria.aluna",
+  "email": "maria@escola.ao",
+  "password": "senha12345678",
+  "nivel": "aluno",
+  "vinculo_id": 1
+}
+
+### 14. Criar Usuário Aluno 2
+POST http://localhost:3000/api/usuarios/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "username": "carlos.aluno",
+  "email": "carlos@escola.ao",
+  "password": "senha12345678",
+  "nivel": "aluno",
+  "vinculo_id": 2
+}
+
+### 15. Criar Usuário Gerente
+POST http://localhost:3000/api/usuarios/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "username": "gerente",
+  "email": "gerente@escola.ao",
+  "password": "senha12345678",
+  "nivel": "gerente"
+}
+
+### 16. Cadastrar Alunos nas Rotas com Paragens
+POST http://localhost:3000/api/alunos/cadastrar-alunos-rota
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "rota_id": 1,
+  "alunos": [
+    {
+      "aluno_id": 1,
+      "paragem": "Maianga"
+    }
+  ]
+}
+
+### 17. Cadastrar Aluno 2 na Rota 2
+POST http://localhost:3000/api/alunos/cadastrar-alunos-rota
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+{
+  "rota_id": 2,
+  "alunos": [
+    {
+      "aluno_id": 2,
+      "paragem": "Sambizanga"
+    }
+  ]
+}
+
+### ============================================
+### TESTES COM MOTORISTA
+### ============================================
+
+### 18. Login Motorista 1
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "joao.motorista",
+  "password": "senha12345678"
+}
+
+### COPIE O TOKEN DO MOTORISTA E USE ABAIXO
+
+### 19. Iniciar Viagem (Motorista)
+POST http://localhost:3000/api/viagens/iniciar
+Content-Type: application/json
+Authorization: Bearer TOKEN_DO_MOTORISTA_AQUI
+
+{
+  "rota_id": 1
+}
+
+### 20. Registrar Presença do Aluno (Motorista)
+POST http://localhost:3000/api/viagens/registrar-presenca
+Content-Type: application/json
+Authorization: Bearer TOKEN_DO_MOTORISTA_AQUI
+
+{
+  "viagem_id": 1,
+  "aluno_id": 1,
+  "paragem": "Maianga"
+}
+
+### 21. Finalizar Viagem (Motorista)
+POST http://localhost:3000/api/viagens/finalizar
+Content-Type: application/json
+Authorization: Bearer TOKEN_DO_MOTORISTA_AQUI
+
+{
+  "viagem_id": 1
+}
+
+### ============================================
+### TESTES COM ALUNO
+### ============================================
+
+### 22. Login Aluno 1
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "maria.aluna",
+  "password": "senha12345678"
+}
+
+### COPIE O TOKEN DO ALUNO E USE ABAIXO
+
+### 23. Listar Viagens Ativas (Aluno)
+POST http://localhost:3000/api/viagens/listar-ativas
+Content-Type: application/json
+Authorization: Bearer TOKEN_DO_ALUNO_AQUI
+
+### 24. Confirmar Entrada no Veículo (Aluno)
+POST http://localhost:3000/api/viagens/confirmar-entrada
+Content-Type: application/json
+Authorization: Bearer TOKEN_DO_ALUNO_AQUI
+
+{
+  "viagem_id": 1,
+  "paragem": "Maianga"
+}
+
+### ============================================
+### RELATÓRIOS (ADMIN/GERENTE)
+### ============================================
+
+### 25. Relatório de Viagens
+GET http://localhost:3000/api/relatorios/viagens-data?data_inicio=2025-01-01&data_fim=2025-12-31
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+### 26. Dashboard com Estatísticas
+GET http://localhost:3000/api/relatorios/dashboard
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+### 27. Listar Todos os Alunos
+POST http://localhost:3000/api/alunos/list
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+
+### 28. Listar Todas as Rotas
+POST http://localhost:3000/api/rotas/list
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE

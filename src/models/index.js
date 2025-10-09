@@ -7,11 +7,11 @@ const Rota = require('./Rota');
 const Veiculo = require('./Veiculo');
 const Usuario = require('./Usuario');
 const Log = require('./Log');
+const Viagem = require('./Viagem');
+const PresencaAluno = require('./PresencaAluno');
 
-// Criar as associações
-const models = { Aluno, Motorista, Rota, Veiculo, Usuario, Log };
+const models = { Aluno, Motorista, Rota, Veiculo, Usuario, Log, Viagem, PresencaAluno };
 
-// Executar associações se existirem
 Object.keys(models).forEach(modelName => {
     if (models[modelName].associate) {
         models[modelName].associate(models);

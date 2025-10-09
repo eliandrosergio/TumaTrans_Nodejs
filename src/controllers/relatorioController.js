@@ -72,6 +72,7 @@ exports.alunosPorRota = async (req, res) => {
     }
 };
 
+// Logs do sistema
 exports.logs = async (req, res) => {
     try {
         const { Log, Usuario } = require('../models');
@@ -88,4 +89,43 @@ exports.logs = async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: 'Erro ao buscar logs.' });
     }
+};
+
+// Relatório de viagens
+exports.relatorioViagens = async (req, res) => {
+    try {
+        const { Viagem, PresencaAluno } = require('../models');
+        const { data_inicio, data_fim } = req.query;
+        
+        const where = {};
+        if (data_inicio && data_fim) {
+            where.data_viagem = {
+                [Op.between]: [data_inicio, data_fim]
+            };
+        }
+        
+        const viagens = await Viagem.findAll({
+            where,
+            include: [
+                { model: Rota, as: 'rota' },
+                { model: Motorista, as: 'motorista' },
+                {
+                    model: PresencaAluno,
+                    as: 'presencas',
+                    include: [{ model: Aluno, as: 'aluno' }]
+                }
+            ],
+            order: [['data_viagem', 'DESC'], ['horario_inicio', 'DESC']]
+        });
+        
+        res.json(viagens);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao gerar relatório.' });
+    }
+};
+
+// Form do relatório de viagens
+exports.formRelatorioViagens = (req, res) => {
+    res.render('relatorioViews/relatorio_viagens', { title: 'Relatório de Viagens' });
 };

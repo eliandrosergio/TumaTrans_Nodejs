@@ -37,6 +37,7 @@ const relatorioRoutes = require('./routes/relatorioRoutes');
 const motoristaRoutes = require('./routes/motoristaRoutes');
 const usuarioRoutes = require('./routes/usuarioRoutes');
 const veiculoRoutes = require('./routes/veiculoRoutes');
+const viagemRoutes = require('./routes/viagemRoutes');
 const alunoRoutes = require('./routes/alunoRoutes');
 const authRoutes = require('./routes/authRoutes');
 const rotaRoutes = require('./routes/rotaRoutes');
@@ -46,11 +47,11 @@ app.use('/api/motoristas', motoristaRoutes);
 app.use('/api/relatorios', relatorioRoutes);
 app.use('/api/veiculos', veiculoRoutes);
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api/viagens', viagemRoutes);
 app.use('/api/alunos', alunoRoutes);
 app.use('/api/rotas', rotaRoutes);
 app.use('/api/auth', authRoutes);
 app.use('', navRoutes);
-
 // Rota inicial
 app.get('/', (req, res) => {
     res.render('home', { title: 'Gestão de Transporte Escolar' });

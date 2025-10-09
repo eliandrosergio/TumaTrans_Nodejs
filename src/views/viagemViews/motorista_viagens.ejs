@@ -1,0 +1,206 @@
+<div class="mb-4">
+    <h2>Minhas Viagens</h2>
+    <p class="text-muted">Gerenciar viagens e presença de alunos</p>
+</div>
+
+<div id="message" class="alert" style="display:none;"></div>
+
+<!-- Iniciar Nova Viagem -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Iniciar Nova Viagem</h5>
+    </div>
+    <div class="card-body">
+        <form id="formIniciarViagem">
+            <div class="mb-3">
+                <label for="rota_id" class="form-label">Selecione a Rota</label>
+                <select class="form-control" id="rota_id" required>
+                    <option value="">Carregando...</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Iniciar Viagem</button>
+        </form>
+    </div>
+</div>
+
+<!-- Viagem em Andamento -->
+<div id="viagemAndamento" style="display:none;">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Viagem em Andamento</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Rota:</strong> <span id="rotaNome"></span></p>
+            <p><strong>Horário Início:</strong> <span id="horarioInicio"></span></p>
+            
+            <h6 class="mt-4">Registrar Presença dos Alunos</h6>
+            <div id="listaAlunos"></div>
+            
+            <button class="btn btn-danger mt-3" onclick="finalizarViagem()">Finalizar Viagem</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let viagemAtualId = null;
+
+    async function carregarRotas() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/rotas/list', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const rotas = await response.json();
+            const select = document.getElementById('rota_id');
+            select.innerHTML = '<option value="">Selecione uma rota</option>';
+            rotas.forEach(rota => {
+                select.innerHTML += `<option value="${rota.id}">${rota.nome}</option>`;
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    document.getElementById('formIniciarViagem').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        const rota_id = document.getElementById('rota_id').value;
+        
+        try {
+            const response = await fetch('/api/viagens/iniciar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ rota_id })
+            });
+            const result = await response.json();
+            
+            if (response.ok) {
+                emitirMensagem(document.getElementById('message'), 'success', result.message);
+                carregarViagemAtiva();
+            } else {
+                emitirMensagem(document.getElementById('message'), 'danger', result.error);
+            }
+        } catch (err) {
+            console.error(err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao iniciar viagem.');
+        }
+    });
+
+    async function carregarViagemAtiva() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/viagens/listar-ativas', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const viagens = await response.json();
+            
+            if (viagens.length > 0) {
+                const viagem = viagens[0];
+                viagemAtualId = viagem.id;
+                
+                document.getElementById('rotaNome').textContent = viagem.rota.nome;
+                document.getElementById('horarioInicio').textContent = viagem.horario_inicio;
+                document.getElementById('viagemAndamento').style.display = 'block';
+                
+                // Carregar alunos da rota
+                await carregarAlunosDaRota(viagem.rota_id);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function carregarAlunosDaRota(rota_id) {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/alunos/list', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const alunos = await response.json();
+            const alunosDaRota = alunos.filter(a => a.rota_id == rota_id);
+            
+            const lista = document.getElementById('listaAlunos');
+            lista.innerHTML = '';
+            
+            alunosDaRota.forEach(aluno => {
+                lista.innerHTML += `
+                    <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+                        <div>
+                            <strong>${aluno.nome}</strong><br>
+                            <small class="text-muted">Paragem: ${aluno.paragem_embarque || 'Não definida'}</small>
+                        </div>
+                        <button class="btn btn-sm btn-primary" onclick="registrarPresenca(${aluno.id}, '${aluno.paragem_embarque || 'Centro'}')">
+                            Registrar
+                        </button>
+                    </div>
+                `;
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function registrarPresenca(aluno_id, paragem) {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/viagens/registrar-presenca', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    viagem_id: viagemAtualId,
+                    aluno_id,
+                    paragem
+                })
+            });
+            const result = await response.json();
+            
+            if (response.ok) {
+                emitirMensagem(document.getElementById('message'), 'success', 'Presença registrada!');
+            } else {
+                emitirMensagem(document.getElementById('message'), 'danger', result.error);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function finalizarViagem() {
+        mostrarModal('Finalizar Viagem', 'Tem certeza que deseja finalizar esta viagem?', async () => {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch('/api/viagens/finalizar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ viagem_id: viagemAtualId })
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    emitirMensagem(document.getElementById('message'), 'success', result.message);
+                    location.reload();
+                } else {
+                    emitirMensagem(document.getElementById('message'), 'danger', result.error);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }, false);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        carregarRotas();
+        carregarViagemAtiva();
+    });
+</script>

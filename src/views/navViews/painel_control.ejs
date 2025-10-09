@@ -58,6 +58,9 @@
                     <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/alunos/cadastro')">
                         Cadastrar
                     </a>
+                    <a class="btn btn-outline-secondary" href="#" onclick="navigateWithToken(event, '/api/alunos/cadastrar-rota')" id="btnCadastrarAlunosRota">
+                        Cadastrar em Rotas
+                    </a>
                 </div>
             </div>
         </div>
@@ -131,17 +134,16 @@
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card h-100">
-            <div class="card-body p-4">
-                <h5 class="mb-3">Relatórios</h5>
-                <p class="text-muted mb-4">Visualizar dados e estatísticas</p>
-                <div class="d-grid gap-2">
-                    <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/relatorios/ver')">
-                        Ver Relatórios
-                    </a>
-                </div>
-            </div>
+    <div class="card-body p-4">
+        <h5 class="mb-3">Relatórios</h5>
+        <p class="text-muted mb-4">Visualizar dados e estatísticas</p>
+        <div class="d-grid gap-2">
+            <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/relatorios/ver')">
+                Ver Relatórios
+            </a>
+            <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/relatorios/viagens')">
+                Relatório de Viagens
+            </a>
         </div>
     </div>
 
@@ -208,6 +210,21 @@
             }
         }
 
+        // Configurar visibilidade dos botões baseado no nível
+        function configurarBotoesEspecificos() {
+            const nivel = getNivelUsuario();
+            
+            // Botão de cadastrar alunos em rotas (apenas admin e gerente)
+            const btnCadastrarAlunosRota = document.getElementById('btnCadastrarAlunosRota');
+            if (btnCadastrarAlunosRota) {
+                if (nivel === 'admin' || nivel === 'gerente') {
+                    btnCadastrarAlunosRota.style.display = 'block';
+                } else {
+                    btnCadastrarAlunosRota.style.display = 'none';
+                }
+            }
+        }
+
         // Função auxiliar para remover botão de cadastrar
         function removerBotaoCadastrar(card) {
             if (!card) return;
@@ -232,10 +249,11 @@
                 console.error('Erro ao carregar estatísticas:', err);
             }
         }
-        
+
         document.addEventListener('DOMContentLoaded', () => {
             aplicarPermissoes();
             carregarEstatisticas();
+            configurarBotoesEspecificos();
         });
     </script>
 </div>

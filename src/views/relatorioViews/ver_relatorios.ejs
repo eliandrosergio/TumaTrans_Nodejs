@@ -19,23 +19,23 @@
     <div class="col-md-6">
         <div class="card h-100">
             <div class="card-body">
+                <h5 class="card-title">Relatório de Viagens</h5>
+                <p class="card-text text-muted">Acompanhamento de horários e presenças nas viagens</p>
+                <a href="#" onclick="navigateWithToken(event, '/api/relatorios/viagens')" class="btn btn-primary">
+                    Ver Relatório
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body">
                 <h5 class="card-title">Próximos Horários</h5>
                 <p class="card-text text-muted">Veja as próximas rotas do dia</p>
                 <div id="proximosHorarios">
                     <p class="text-muted">Carregando...</p>
                 </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Utilização de Veículos</h5>
-                <p class="card-text text-muted">Relatório de uso da frota</p>
-                <button class="btn btn-outline-primary" disabled>
-                    Em desenvolvimento
-                </button>
             </div>
         </div>
     </div>

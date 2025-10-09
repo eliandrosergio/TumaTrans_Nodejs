@@ -34,6 +34,10 @@ const Aluno = sequelize.define('Aluno', {
         type: DataTypes.DATEONLY,
         allowNull: false,
     },
+    paragem_embarque: {
+        type: DataTypes.STRING,
+        allowNull: true, // Paragem onde o aluno deve ser pego
+    },
 }, {
     tableName: 'alunos',
     timestamps: true, // Adiciona createdAt e updatedAt

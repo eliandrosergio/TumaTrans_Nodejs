@@ -102,3 +102,39 @@ exports.delete = async (req, res) => {
 exports.formEdit = (req, res) => {
     res.render('alunoViews/editar_aluno', { title: 'Editar Aluno' });
 };
+
+// Cadastrar alunos em rota com paragens
+exports.cadastrarAlunosNaRota = async (req, res) => {
+    try {
+        const { rota_id, alunos } = req.body; // alunos = [{aluno_id: 1, paragem: "Centro"}, ...]
+        
+        if (!Array.isArray(alunos) || alunos.length === 0) {
+            return res.status(400).json({ error: 'Informe ao menos um aluno.' });
+        }
+        
+        const resultados = [];
+        
+        for (const item of alunos) {
+            const aluno = await Aluno.findByPk(item.aluno_id);
+            if (aluno) {
+                await aluno.update({
+                    rota_id,
+                    paragem_embarque: item.paragem
+                });
+                resultados.push({ aluno_id: item.aluno_id, sucesso: true });
+            } else {
+                resultados.push({ aluno_id: item.aluno_id, sucesso: false, motivo: 'Aluno não encontrado' });
+            }
+        }
+        
+        res.json({ message: 'Operação concluída.', resultados });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao cadastrar alunos na rota.' });
+    }
+};
+
+// Mostrar formulário de cadastrar alunos na rota
+exports.formCadastrarAlunosRota = (req, res) => {
+    res.render('alunoViews/cadastrar_alunos_rota', { title: 'Cadastrar Alunos na Rota' });
+};

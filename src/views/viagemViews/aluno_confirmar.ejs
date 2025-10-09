@@ -1,0 +1,100 @@
+<div class="mb-4">
+    <h2>Confirmar Presença</h2>
+    <p class="text-muted">Confirme sua entrada no veículo</p>
+</div>
+
+<div id="message" class="alert" style="display:none;"></div>
+
+<div id="viagemDisponivel" style="display:none;">
+    <div class="card">
+        <div class="card-body text-center p-5">
+            <h4 class="mb-3">Viagem Disponível</h4>
+            <p><strong>Rota:</strong> <span id="rotaNome"></span></p>
+            <p><strong>Motorista:</strong> <span id="motoristaNome"></span></p>
+            <p><strong>Sua Paragem:</strong> <span id="minhaParagem"></span></p>
+            
+            <button class="btn btn-success btn-lg mt-3" onclick="confirmarEntrada()">
+                <i class="bi bi-check-circle"></i> Confirmar que Entrei no Veículo
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="semViagem" style="display:none;">
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> Não há viagens ativas no momento.
+    </div>
+</div>
+
+<script>
+    let viagemAtualId = null;
+    let minhaParagem = '';
+
+    async function carregarViagemDisponivel() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/viagens/listar-ativas', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const viagens = await response.json();
+            
+            if (viagens.length > 0) {
+                const viagem = viagens[0];
+                viagemAtualId = viagem.id;
+                
+                // Buscar dados do aluno para pegar a paragem
+                const alunoResponse = await fetch('/api/alunos/list', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const alunos = await alunoResponse.json();
+                const meusDados = alunos[0]; // Aluno logado
+                
+                minhaParagem = meusDados.paragem_embarque || 'Não definida';
+                
+                document.getElementById('rotaNome').textContent = viagem.rota.nome;
+                document.getElementById('motoristaNome').textContent = viagem.motorista.nome;
+                document.getElementById('minhaParagem').textContent = minhaParagem;
+                document.getElementById('viagemDisponivel').style.display = 'block';
+                document.getElementById('semViagem').style.display = 'none';
+            } else {
+                document.getElementById('viagemDisponivel').style.display = 'none';
+                document.getElementById('semViagem').style.display = 'block';
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function confirmarEntrada() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/viagens/confirmar-entrada', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    viagem_id: viagemAtualId,
+                    paragem: minhaParagem
+                })
+            });
+            const result = await response.json();
+            
+            if (response.ok) {
+                mostrarModal('Sucesso!', 'Sua presença foi confirmada com sucesso!', () => {
+                    location.reload();
+                }, true);
+            } else {
+                emitirMensagem(document.getElementById('message'), 'danger', result.error);
+            }
+        } catch (err) {
+            console.error(err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao confirmar entrada.');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', carregarViagemDisponivel);
+</script>
