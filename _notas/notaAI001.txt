@@ -1,0 +1,7 @@
+Sistema do Cassules
+
+1. O sistema deve mostar na area de ver do relatorio apenas os "Proximos Horarios" quando o user for nivel aluno e motorista, e apenas os horarios das rotas que o aluno ou motorista pertence;
+
+2. O sistema deve mostrar o "Relatorio de Viagens" apenas para os admin's e os gerente's, para os aluno's e motorista's deve mostra um botao (no painel, substituindo o botao do relatorio) que leve em uma area onde os aluno's confirmem ter pego o veiculo para os aluno's, e para os motorista's uma area onde eles dizem se ja entraram na rota e tambem onde eles dizem as paragens onde pegaram quais alunos, pois isso nao foi implementado ainda;
+
+
