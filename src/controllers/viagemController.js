@@ -184,10 +184,55 @@ exports.relatorioViagens = async (req, res) => {
     }
 };
 
+// Formulário para motorista ver suas viagens
 exports.formViagensMotorista = (req, res) => {
     res.render('viagemViews/motorista_viagens', { title: 'Minhas Viagens' });
 };
 
+// Formulário para aluno confirmar presença
 exports.formViagensAluno = (req, res) => {
     res.render('viagemViews/aluno_confirmar', { title: 'Confirmar Presença' });
+};
+
+// Verificar se aluno já confirmou presença
+exports.verificarPresencaAluno = async (req, res) => {
+    try {
+        const aluno_id = req.user.vinculo_id;
+        const { viagem_id } = req.query;
+        
+        const presenca = await PresencaAluno.findOne({
+            where: { viagem_id, aluno_id }
+        });
+        
+        if (presenca) {
+            res.json({
+                existe: true,
+                confirmado_motorista: presenca.confirmado_motorista,
+                confirmado_aluno: presenca.confirmado_aluno,
+                horario_entrada: presenca.horario_entrada
+            });
+        } else {
+            res.json({ existe: false });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao verificar presença.' });
+    }
+};
+
+// Buscar presenças de uma viagem (para motorista ver confirmações)
+exports.buscarPresencasViagem = async (req, res) => {
+    try {
+        const { viagem_id } = req.query;
+        
+        const presencas = await PresencaAluno.findAll({
+            where: { viagem_id },
+            include: [{ model: Aluno, as: 'aluno', attributes: ['id', 'nome'] }]
+        });
+        
+        res.json(presencas);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao buscar presenças.' });
+    }
 };

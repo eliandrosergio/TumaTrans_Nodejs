@@ -74,6 +74,7 @@
     let alunoId = null;
     let presencaConfirmada = false;
 
+    // Carrega viagem disponível para o aluno
     async function carregarViagemDisponivel() {
         const token = localStorage.getItem('token');
         try {
@@ -137,12 +138,33 @@
         }
     }
 
+    // Verifica se o aluno já confirmou presença
     async function verificarPresenca() {
-        // Aqui você pode adicionar lógica para verificar se o aluno já confirmou
-        // Por enquanto, vamos assumir que não confirmou
-        mostrarBotaoConfirmar();
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`/api/viagens/verificar-presenca?viagem_id=${viagemAtualId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const result = await response.json();
+            
+            if (result.existe) {
+                if (result.confirmado_aluno) {
+                    mostrarPresencaConfirmada(result.horario_entrada);
+                } else if (result.confirmado_motorista) {
+                    mostrarAguardandoConfirmacao(result.horario_entrada);
+                } else {
+                    mostrarBotaoConfirmar();
+                }
+            } else {
+                mostrarAguardandoMotorista();
+            }
+        } catch (err) {
+            console.error(err);
+            mostrarBotaoConfirmar();
+        }
     }
 
+    // Mostra mensagem aguardando motorista
     function mostrarBotaoConfirmar() {
         const container = document.getElementById('statusPresenca');
         container.innerHTML = `
@@ -155,16 +177,46 @@
         `;
     }
 
-    function mostrarPresencaConfirmada() {
+    // Mostra mensagem de presença confirmada
+    function mostrarPresencaConfirmada(horario) {
         const container = document.getElementById('statusPresenca');
         container.innerHTML = `
             <i class="bi bi-check-circle-fill text-success mb-3" style="font-size: 3rem;"></i>
             <h5 class="mb-3 text-success">Presença Confirmada!</h5>
+            <p class="text-muted mb-2">Confirmada às ${horario || 'agora'}</p>
             <p class="text-muted mb-2">Sua presença foi registrada com sucesso.</p>
             <small class="text-muted">Tenha uma boa viagem!</small>
         `;
     }
 
+    // Mostra mensagem aguardando confirmação do motorista
+    function mostrarAguardandoMotorista() {
+        const container = document.getElementById('statusPresenca');
+        container.innerHTML = `
+            <i class="bi bi-clock text-warning mb-3" style="font-size: 3rem;"></i>
+            <h5 class="mb-3">Aguardando Motorista</h5>
+            <p class="text-muted mb-4">O motorista ainda não registrou sua presença nesta viagem.</p>
+            <button class="btn btn-outline-primary" onclick="location.reload()">
+                <i class="bi bi-arrow-clockwise"></i> Atualizar
+            </button>
+        `;
+    }
+
+    // Mostra mensagem aguardando confirmação do motorista
+    function mostrarAguardandoConfirmacao(horario) {
+        const container = document.getElementById('statusPresenca');
+        container.innerHTML = `
+            <i class="bi bi-check-circle text-info mb-3" style="font-size: 3rem;"></i>
+            <h5 class="mb-3">Motorista Registrou sua Presença</h5>
+            <p class="text-muted mb-2">Registrado às ${horario}</p>
+            <p class="text-muted mb-4">Confirme que você realmente entrou no veículo</p>
+            <button class="btn btn-success btn-lg" onclick="confirmarEntrada()">
+                <i class="bi bi-check-circle-fill"></i> Sim, Eu Entrei no Veículo
+            </button>
+        `;
+    }
+
+    // Mostra mensagem aguardando confirmação do motorista
     async function confirmarEntrada() {
         const token = localStorage.getItem('token');
         
@@ -203,5 +255,33 @@
         );
     }
 
+    // Mostra mensagem aguardando confirmação do motorista
     document.addEventListener('DOMContentLoaded', carregarViagemDisponivel);
+
+    // Auto-refresh a cada 15 segundos
+    let intervalId = null;
+
+    function iniciarAutoRefresh() {
+        intervalId = setInterval(() => {
+            if (viagemAtualId && !presencaConfirmada) {
+                verificarPresenca();
+            }
+        }, 15000); // 15 segundos
+    }
+
+    function pararAutoRefresh() {
+        if (intervalId) {
+            clearInterval(intervalId);
+            intervalId = null;
+        }
+    }
+
+    // Iniciar auto-refresh quando carregar viagem
+    const originalCarregar = carregarViagemDisponivel;
+    carregarViagemDisponivel = async function() {
+        await originalCarregar();
+        if (viagemAtualId) {
+            iniciarAutoRefresh();
+        }
+    }
 </script>

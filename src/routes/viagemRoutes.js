@@ -15,4 +15,7 @@ router.post('/registrar-presenca', authMiddleware, permissaoMiddleware(['motoris
 router.post('/confirmar-entrada', authMiddleware, permissaoMiddleware(['aluno']), viagemController.confirmarEntradaAluno);
 router.post('/listar-ativas', authMiddleware, viagemController.listarViagensAtivas);
 
+router.get('/verificar-presenca', authMiddleware, permissaoMiddleware(['aluno']), viagemController.verificarPresencaAluno);
+router.get('/buscar-presencas', authMiddleware, permissaoMiddleware(['motorista']), viagemController.buscarPresencasViagem);
+
 module.exports = router;

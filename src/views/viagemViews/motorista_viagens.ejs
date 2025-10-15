@@ -32,22 +32,36 @@
             <h5 class="mb-0"><i class="bi bi-bus-front"></i> Viagem em Andamento</h5>
         </div>
         <div class="card-body">
+            <!-- Informações da Viagem -->
+            <div class="col-md-6">
+                <p class="mb-1"><strong>Rota:</strong> <span id="rotaNome"></span></p>
+                <p class="mb-0"><strong>Horário Início:</strong> <span id="horarioInicio"></span></p>
+            </div>
+            <div class="col-md-3">
+                <div class="text-center">
+                    <h4 class="mb-0" id="contadorConfirmacoes">0/0</h4>
+                    <small class="text-muted">Confirmados</small>
+                </div>
+            </div>
+            <div class="col-md-3 text-end">
+            <!-- Botões de Ação -->
             <div class="row mb-3">
                 <div class="col-md-6">
                     <p class="mb-1"><strong>Rota:</strong> <span id="rotaNome"></span></p>
                     <p class="mb-0"><strong>Horário Início:</strong> <span id="horarioInicio"></span></p>
                 </div>
                 <div class="col-md-6 text-end">
+                    <button class="btn btn-outline-primary me-2" onclick="atualizarConfirmacoes()">
+                        <i class="bi bi-arrow-clockwise"></i> Atualizar
+                    </button>
                     <button class="btn btn-danger" onclick="finalizarViagem()">
                         <i class="bi bi-stop-circle"></i> Finalizar Viagem
                     </button>
                 </div>
             </div>
-            
             <hr>
-            
+            <!-- Registrar Presença dos Alunos -->
             <h6 class="mb-3"><i class="bi bi-people"></i> Registrar Presença dos Alunos por Paragem</h6>
-            
             <!-- Lista de Paragens -->
             <div id="listaParagens"></div>
         </div>
@@ -59,6 +73,7 @@
     let alunosPorParagem = {};
     let presencasRegistradas = new Set(); // Para rastrear alunos já registrados
 
+    // Carregar rotas disponíveis
     async function carregarRotas() {
         const token = localStorage.getItem('token');
         try {
@@ -77,6 +92,7 @@
         }
     }
 
+    // Iniciar Viagem
     document.getElementById('formIniciarViagem').addEventListener('submit', async (e) => {
         e.preventDefault();
         const token = localStorage.getItem('token');
@@ -106,6 +122,7 @@
         }
     });
 
+    // Carrega a viagem ativa do motorista
     async function carregarViagemAtiva() {
         const token = localStorage.getItem('token');
         try {
@@ -132,6 +149,7 @@
         }
     }
 
+    // Carrega alunos da rota e organiza por paragem
     async function carregarAlunosPorParagem(rota) {
         const token = localStorage.getItem('token');
         try {
@@ -167,6 +185,7 @@
         }
     }
 
+    // Renderiza a lista de paragens e alunos
     function renderizarParagens() {
         const container = document.getElementById('listaParagens');
         container.innerHTML = '';
@@ -192,7 +211,7 @@
                         <div class="card-body">
                             <div class="list-group" id="alunos${paragemId}">
                                 ${alunos.map(aluno => `
-                                    <div class="list-group-item" id="aluno-item-${aluno.id}">
+                                    <div class="list-group-item" id="aluno-item-${aluno.id}" style="transition: background-color 0.3s;">
                                         <div class="d-flex justify-content-between align-items-center">
                                             <div>
                                                 <strong>${aluno.nome}</strong><br>
@@ -218,6 +237,58 @@
         });
     }
 
+    // Atualiza o contador de confirmações
+    function atualizarContador(presencas) {
+        const totalAlunos = Object.values(alunosPorParagem).flat().length;
+        const confirmados = presencas.filter(p => p.confirmado_aluno).length;
+        
+        const contador = document.getElementById('contadorConfirmacoes');
+        if (contador) {
+            contador.textContent = `${confirmados}/${totalAlunos}`;
+            contador.style.color = confirmados === totalAlunos ? '#28a745' : '#007bff';
+        }
+    }
+
+    // Atualiza o status das confirmações periodicamente
+    async function atualizarConfirmacoes() {
+        if (!viagemAtualId) return;
+        
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`/api/viagens/buscar-presencas?viagem_id=${viagemAtualId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const presencas = await response.json();
+            
+            // Atualizar visualmente cada aluno
+            presencas.forEach(presenca => {
+                const alunoItem = document.getElementById(`aluno-item-${presenca.aluno_id}`);
+                const btn = document.getElementById(`btn-aluno-${presenca.aluno_id}`);
+                
+                if (alunoItem && btn) {
+                    if (presenca.confirmado_aluno) {
+                        // Aluno confirmou
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Aluno Confirmou';
+                        btn.className = 'btn btn-sm btn-success';
+                        alunoItem.style.backgroundColor = '#d4edda';
+                    } else if (presenca.confirmado_motorista) {
+                        // Motorista registrou, aguardando aluno
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="bi bi-clock-fill"></i> Aguardando Aluno';
+                        btn.className = 'btn btn-sm btn-warning';
+                        alunoItem.style.backgroundColor = '#fff3cd';
+                        presencasRegistradas.add(presenca.aluno_id);
+                    }
+                }
+            });
+            atualizarContador(presencas);
+        } catch (err) {
+            console.error('Erro ao atualizar confirmações:', err);
+        }
+    }
+
+    // Verifica confirmações a cada 15 segundos
     async function registrarPresenca(aluno_id, paragem) {
         const token = localStorage.getItem('token');
         try {
@@ -257,6 +328,7 @@
         }
     }
 
+    // Finalizar Viagem
     async function finalizarViagem() {
         mostrarModal('Finalizar Viagem', 'Tem certeza que deseja finalizar esta viagem?', async () => {
             const token = localStorage.getItem('token');
@@ -285,8 +357,32 @@
         }, false);
     }
 
+    // Verifica confirmações a cada 15 segundos
     document.addEventListener('DOMContentLoaded', () => {
         carregarRotas();
         carregarViagemAtiva();
     });
+
+    // Auto-refresh a cada 10 segundos para ver confirmações dos alunos
+    let motoristaIntervalId = null;
+
+    function iniciarAutoRefreshMotorista() {
+        motoristaIntervalId = setInterval(() => {
+            if (viagemAtualId) {
+                atualizarConfirmacoes();
+            }
+        }, 10000); // 10 segundos
+    }
+
+    // Modificar carregarViagemAtiva para iniciar auto-refresh
+    const originalCarregarAtiva = carregarViagemAtiva;
+    carregarViagemAtiva = async function() {
+        await originalCarregarAtiva();
+        if (viagemAtualId) {
+            setTimeout(() => {
+                atualizarConfirmacoes();
+                iniciarAutoRefreshMotorista();
+            }, 1000);
+        }
+    }
 </script>
