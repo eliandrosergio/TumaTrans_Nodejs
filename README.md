@@ -1,5 +1,5 @@
 # Sistema de Gestão de Transporte Escolar
-## Complexo Escolar Privado Tchiungo
+## Complexo Escolar Privado SmartBits
 
 ---
 
@@ -7,7 +7,7 @@
 
 ### 1.1 Visão Geral
 
-O **Sistema de Gestão de Transporte Escolar** é uma aplicação web completa desenvolvida para modernizar e otimizar a gestão do transporte de estudantes do Complexo Escolar Privado Tchiungo. O sistema foi projetado para atender às necessidades de diferentes tipos de usuários: administradores, gerentes, motoristas e alunos.
+O **Sistema de Gestão de Transporte Escolar** é uma aplicação web completa desenvolvida para modernizar e otimizar a gestão do transporte de estudantes do Complexo Escolar Privado SmartBits. O sistema foi projetado para atender às necessidades de diferentes tipos de usuários: administradores, gerentes, motoristas e alunos.
 
 ### 1.2 Objetivo Principal
 
@@ -703,4 +703,4 @@ Este projeto demonstra como a tecnologia pode:
 **Desenvolvido por**: eliandrosergio  
 **Ano**: 2025  
 **Licença**: MIT  
-**Instituição**: Complexo Escolar Privado Tchiungo
+**Instituição**: Complexo Escolar Privado SmartBits
