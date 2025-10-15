@@ -25,13 +25,33 @@ exports.proximosHorarios = async (req, res) => {
     try {
         const agora = new Date();
         const horaAtual = agora.toTimeString().slice(0, 5);
+        const nivel = req.user.nivel;
+        const vinculoId = req.user.vinculo_id;
+        
+        let whereClause = {
+            horario_inicio: {
+                [Op.gte]: horaAtual
+            }
+        };
+        
+        // Se for motorista, filtra pelas rotas dele
+        if (nivel === 'motorista') {
+            whereClause.motorista_id = vinculoId;
+        }
+        
+        // Se for aluno, busca a rota dele
+        if (nivel === 'aluno') {
+            const aluno = await Aluno.findByPk(vinculoId);
+            if (aluno && aluno.rota_id) {
+                whereClause.id = aluno.rota_id;
+            } else {
+                // Se aluno não tem rota, retorna vazio
+                return res.json([]);
+            }
+        }
         
         const rotas = await Rota.findAll({
-            where: {
-                horario_inicio: {
-                    [Op.gte]: horaAtual
-                }
-            },
+            where: whereClause,
             include: [
                 { model: Motorista, as: 'motorista' },
                 { model: Veiculo, as: 'veiculo' }
@@ -42,6 +62,7 @@ exports.proximosHorarios = async (req, res) => {
         
         res.json(rotas);
     } catch (err) {
+        console.error(err);
         res.status(500).json({ error: 'Erro ao buscar próximos horários.' });
     }
 };
