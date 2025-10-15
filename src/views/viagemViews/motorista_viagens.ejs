@@ -1,14 +1,14 @@
 <div class="mb-4">
     <h2>Minhas Viagens</h2>
-    <p class="text-muted">Gerenciar viagens e presença de alunos</p>
+    <p class="text-muted">Gerenciar viagens e registrar presenças dos alunos</p>
 </div>
 
 <div id="message" class="alert" style="display:none;"></div>
 
 <!-- Iniciar Nova Viagem -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="mb-0">Iniciar Nova Viagem</h5>
+<div class="card mb-4" id="cardIniciarViagem">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0"><i class="bi bi-play-circle"></i> Iniciar Nova Viagem</h5>
     </div>
     <div class="card-body">
         <form id="formIniciarViagem">
@@ -18,31 +18,46 @@
                     <option value="">Carregando...</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-success">Iniciar Viagem</button>
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-play-fill"></i> Iniciar Viagem
+            </button>
         </form>
     </div>
 </div>
 
 <!-- Viagem em Andamento -->
 <div id="viagemAndamento" style="display:none;">
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Viagem em Andamento</h5>
+            <h5 class="mb-0"><i class="bi bi-bus-front"></i> Viagem em Andamento</h5>
         </div>
         <div class="card-body">
-            <p><strong>Rota:</strong> <span id="rotaNome"></span></p>
-            <p><strong>Horário Início:</strong> <span id="horarioInicio"></span></p>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>Rota:</strong> <span id="rotaNome"></span></p>
+                    <p class="mb-0"><strong>Horário Início:</strong> <span id="horarioInicio"></span></p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-danger" onclick="finalizarViagem()">
+                        <i class="bi bi-stop-circle"></i> Finalizar Viagem
+                    </button>
+                </div>
+            </div>
             
-            <h6 class="mt-4">Registrar Presença dos Alunos</h6>
-            <div id="listaAlunos"></div>
+            <hr>
             
-            <button class="btn btn-danger mt-3" onclick="finalizarViagem()">Finalizar Viagem</button>
+            <h6 class="mb-3"><i class="bi bi-people"></i> Registrar Presença dos Alunos por Paragem</h6>
+            
+            <!-- Lista de Paragens -->
+            <div id="listaParagens"></div>
         </div>
     </div>
 </div>
 
 <script>
     let viagemAtualId = null;
+    let alunosPorParagem = {};
+    let presencasRegistradas = new Set(); // Para rastrear alunos já registrados
 
     async function carregarRotas() {
         const token = localStorage.getItem('token');
@@ -80,6 +95,7 @@
             
             if (response.ok) {
                 emitirMensagem(document.getElementById('message'), 'success', result.message);
+                document.getElementById('cardIniciarViagem').style.display = 'none';
                 carregarViagemAtiva();
             } else {
                 emitirMensagem(document.getElementById('message'), 'danger', result.error);
@@ -105,17 +121,18 @@
                 
                 document.getElementById('rotaNome').textContent = viagem.rota.nome;
                 document.getElementById('horarioInicio').textContent = viagem.horario_inicio;
+                document.getElementById('cardIniciarViagem').style.display = 'none';
                 document.getElementById('viagemAndamento').style.display = 'block';
                 
-                // Carregar alunos da rota
-                await carregarAlunosDaRota(viagem.rota_id);
+                // Carregar alunos da rota organizados por paragem
+                await carregarAlunosPorParagem(viagem.rota);
             }
         } catch (err) {
             console.error(err);
         }
     }
 
-    async function carregarAlunosDaRota(rota_id) {
+    async function carregarAlunosPorParagem(rota) {
         const token = localStorage.getItem('token');
         try {
             const response = await fetch('/api/alunos/list', {
@@ -123,27 +140,82 @@
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const alunos = await response.json();
-            const alunosDaRota = alunos.filter(a => a.rota_id == rota_id);
+            const alunosDaRota = alunos.filter(a => a.rota_id == rota.id);
             
-            const lista = document.getElementById('listaAlunos');
-            lista.innerHTML = '';
+            // Organizar alunos por paragem
+            alunosPorParagem = {};
+            const paragens = rota.pontos_parada.split(',').map(p => p.trim());
             
-            alunosDaRota.forEach(aluno => {
-                lista.innerHTML += `
-                    <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
-                        <div>
-                            <strong>${aluno.nome}</strong><br>
-                            <small class="text-muted">Paragem: ${aluno.paragem_embarque || 'Não definida'}</small>
-                        </div>
-                        <button class="btn btn-sm btn-primary" onclick="registrarPresenca(${aluno.id}, '${aluno.paragem_embarque || 'Centro'}')">
-                            Registrar
-                        </button>
-                    </div>
-                `;
+            // Inicializar paragens
+            paragens.forEach(paragem => {
+                alunosPorParagem[paragem] = [];
             });
+            
+            // Distribuir alunos nas paragens
+            alunosDaRota.forEach(aluno => {
+                const paragem = aluno.paragem_embarque || 'Sem Paragem Definida';
+                if (!alunosPorParagem[paragem]) {
+                    alunosPorParagem[paragem] = [];
+                }
+                alunosPorParagem[paragem].push(aluno);
+            });
+            
+            // Renderizar paragens
+            renderizarParagens();
         } catch (err) {
             console.error(err);
         }
+    }
+
+    function renderizarParagens() {
+        const container = document.getElementById('listaParagens');
+        container.innerHTML = '';
+        
+        Object.keys(alunosPorParagem).forEach((paragem, index) => {
+            const alunos = alunosPorParagem[paragem];
+            
+            if (alunos.length === 0) return; // Não mostra paragens sem alunos
+            
+            const paragemId = `paragem${index}`;
+            
+            container.innerHTML += `
+                <div class="card mb-3">
+                    <div class="card-header" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#${paragemId}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">
+                                <i class="bi bi-geo-alt-fill"></i> ${paragem}
+                            </h6>
+                            <span class="badge bg-secondary">${alunos.length} aluno(s)</span>
+                        </div>
+                    </div>
+                    <div class="collapse" id="${paragemId}">
+                        <div class="card-body">
+                            <div class="list-group" id="alunos${paragemId}">
+                                ${alunos.map(aluno => `
+                                    <div class="list-group-item" id="aluno-item-${aluno.id}">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>${aluno.nome}</strong><br>
+                                                <small class="text-muted">Processo: ${aluno.num_processo}</small>
+                                            </div>
+                                            <button 
+                                                class="btn btn-sm btn-success" 
+                                                id="btn-aluno-${aluno.id}"
+                                                onclick="registrarPresenca(${aluno.id}, '${paragem}')"
+                                                ${presencasRegistradas.has(aluno.id) ? 'disabled' : ''}>
+                                                ${presencasRegistradas.has(aluno.id) ? 
+                                                    '<i class="bi bi-check-circle-fill"></i> Registrado' : 
+                                                    '<i class="bi bi-plus-circle"></i> Registrar'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
     }
 
     async function registrarPresenca(aluno_id, paragem) {
@@ -164,12 +236,24 @@
             const result = await response.json();
             
             if (response.ok) {
+                presencasRegistradas.add(aluno_id);
+                
+                // Atualizar visualmente o botão
+                const btn = document.getElementById(`btn-aluno-${aluno_id}`);
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Registrado';
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-secondary');
+                }
+                
                 emitirMensagem(document.getElementById('message'), 'success', 'Presença registrada!');
             } else {
                 emitirMensagem(document.getElementById('message'), 'danger', result.error);
             }
         } catch (err) {
             console.error(err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao registrar presença.');
         }
     }
 
@@ -188,13 +272,15 @@
                 const result = await response.json();
                 
                 if (response.ok) {
-                    emitirMensagem(document.getElementById('message'), 'success', result.message);
-                    location.reload();
+                    mostrarModal('Sucesso!', 'Viagem finalizada com sucesso!', () => {
+                        location.reload();
+                    }, true);
                 } else {
                     emitirMensagem(document.getElementById('message'), 'danger', result.error);
                 }
             } catch (err) {
                 console.error(err);
+                emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao finalizar viagem.');
             }
         }, false);
     }

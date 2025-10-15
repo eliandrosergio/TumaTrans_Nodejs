@@ -20,6 +20,7 @@ const Motorista = sequelize.define('Motorista', {
     telefone: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
     },
     telefone_emergencia: {
         type: DataTypes.STRING,

@@ -18,12 +18,12 @@ Content-Type: application/json
   "password": "admin123456"
 }
 
-### COPIE O TOKEN ACIMA E COLE EM TODAS AS REQUISIÇÕES ABAIXO NO LUGAR DE eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+### COPIE O TOKEN ACIMA E COLE EM TODAS AS REQUISIÇÕES ABAIXO NO LUGAR DE eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 ### 3. Cadastrar Motorista 1
 POST http://localhost:3000/api/motoristas/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "nome": "João Manuel Silva",
@@ -35,7 +35,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 4. Cadastrar Motorista 2
 POST http://localhost:3000/api/motoristas/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "nome": "Pedro António Costa",
@@ -47,7 +47,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 5. Cadastrar Veículo 1
 POST http://localhost:3000/api/veiculos/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "matricula": "LD-12-34-AB",
@@ -59,7 +59,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 6. Cadastrar Veículo 2
 POST http://localhost:3000/api/veiculos/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "matricula": "LD-56-78-CD",
@@ -71,7 +71,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 7. Cadastrar Rota 1
 POST http://localhost:3000/api/rotas/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "nome": "Rota Centro-Sul",
@@ -86,7 +86,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 8. Cadastrar Rota 2
 POST http://localhost:3000/api/rotas/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "nome": "Rota Norte",
@@ -101,7 +101,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 9. Cadastrar Aluno 1
 POST http://localhost:3000/api/alunos/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "nome": "Maria José Francisco",
@@ -115,7 +115,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 10. Cadastrar Aluno 2
 POST http://localhost:3000/api/alunos/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "nome": "Carlos Alberto Neto",
@@ -129,7 +129,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 11. Criar Usuário Motorista 1
 POST http://localhost:3000/api/usuarios/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "username": "joao.motorista",
@@ -142,7 +142,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 12. Criar Usuário Motorista 2
 POST http://localhost:3000/api/usuarios/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "username": "pedro.motorista",
@@ -155,7 +155,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 13. Criar Usuário Aluno 1
 POST http://localhost:3000/api/usuarios/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "username": "maria.aluna",
@@ -168,7 +168,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 14. Criar Usuário Aluno 2
 POST http://localhost:3000/api/usuarios/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "username": "carlos.aluno",
@@ -181,7 +181,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 15. Criar Usuário Gerente
 POST http://localhost:3000/api/usuarios/create
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "username": "gerente",
@@ -193,7 +193,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 16. Cadastrar Alunos nas Rotas com Paragens
 POST http://localhost:3000/api/alunos/cadastrar-alunos-rota
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "rota_id": 1,
@@ -208,7 +208,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiO
 ### 17. Cadastrar Aluno 2 na Rota 2
 POST http://localhost:3000/api/alunos/cadastrar-alunos-rota
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 {
   "rota_id": 2,
@@ -300,18 +300,18 @@ Authorization: Bearer TOKEN_DO_ALUNO_AQUI
 
 ### 25. Relatório de Viagens
 GET http://localhost:3000/api/relatorios/viagens-data?data_inicio=2025-01-01&data_fim=2025-12-31
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 ### 26. Dashboard com Estatísticas
 GET http://localhost:3000/api/relatorios/dashboard
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 ### 27. Listar Todos os Alunos
 POST http://localhost:3000/api/alunos/list
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM
 
 ### 28. Listar Todas as Rotas
 POST http://localhost:3000/api/rotas/list
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc1OTk3NzI5MCwiZXhwIjoxNzU5OTgwODkwfQ.WDxGOZFftLX_mr4WvnbGZqXJ4lRkyUV7jBENU0XwONE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwibml2ZWwiOiJhZG1pbiIsInZpbmN1bG9faWQiOm51bGwsImlhdCI6MTc2MDU1NTM2NSwiZXhwIjoxNzYwNTU4OTY1fQ.uwIqVwwlkCEgE0reUfw7Q_Twf-lnkXUlyrfCFaBTEJM

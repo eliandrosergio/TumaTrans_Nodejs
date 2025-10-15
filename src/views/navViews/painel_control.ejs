@@ -134,17 +134,9 @@
         </div>
     </div>
 
-    <div class="card-body p-4">
-        <h5 class="mb-3">Relatórios</h5>
-        <p class="text-muted mb-4">Visualizar dados e estatísticas</p>
-        <div class="d-grid gap-2">
-            <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/relatorios/ver')">
-                Ver Relatórios
-            </a>
-            <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/relatorios/viagens')">
-                Relatório de Viagens
-            </a>
-        </div>
+    <!-- Card de Relatórios/Viagens - Muda conforme o nível -->
+    <div class="col-md-4" id="cardRelatoriosOuViagens">
+        <!-- Conteúdo carregado dinamicamente -->
     </div>
 
     <script>
@@ -185,9 +177,8 @@
 
             // Motorista: vê apenas alunos, veículos e rotas (sem botão cadastrar)
             if (nivel === 'motorista') {
-                // Oculta usuários e relatórios
+                // Oculta usuários
                 if (cardUsuarios) cardUsuarios.style.display = 'none';
-                if (cardRelatorios) cardRelatorios.style.display = 'none';
                 
                 // Remove botões de cadastrar
                 removerBotaoCadastrar(cardAlunos);
@@ -198,9 +189,8 @@
 
             // Aluno: vê apenas alunos, motoristas, veículos e rotas (sem botão cadastrar)
             if (nivel === 'aluno') {
-                // Oculta usuários e relatórios
+                // Oculta usuários
                 if (cardUsuarios) cardUsuarios.style.display = 'none';
-                if (cardRelatorios) cardRelatorios.style.display = 'none';
                 
                 // Remove botões de cadastrar
                 removerBotaoCadastrar(cardAlunos);
@@ -222,6 +212,64 @@
                 } else {
                     btnCadastrarAlunosRota.style.display = 'none';
                 }
+            }
+        }
+
+        // Configurar card de Relatórios ou Viagens baseado no nível
+        function configurarCardRelatoriosViagens() {
+            const nivel = getNivelUsuario();
+            const card = document.getElementById('cardRelatoriosOuViagens');
+            
+            if (!card) return;
+            
+            if (nivel === 'admin' || nivel === 'gerente') {
+                // Admin e Gerente veem Relatórios
+                card.innerHTML = `
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <h5 class="mb-3">Relatórios</h5>
+                            <p class="text-muted mb-4">Visualizar dados e estatísticas</p>
+                            <div class="d-grid gap-2">
+                                <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/relatorios/ver')">
+                                    Ver Relatórios
+                                </a>
+                                <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/relatorios/viagens')">
+                                    Relatório de Viagens
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (nivel === 'motorista') {
+                // Motorista vê área de Viagens
+                card.innerHTML = `
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <h5 class="mb-3">Viagens</h5>
+                            <p class="text-muted mb-4">Gerenciar viagens e presenças</p>
+                            <div class="d-grid gap-2">
+                                <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/viagens/motorista')">
+                                    <i class="bi bi-bus-front"></i> Minhas Viagens
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (nivel === 'aluno') {
+                // Aluno vê área de Confirmar Presença
+                card.innerHTML = `
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <h5 class="mb-3">Minha Viagem</h5>
+                            <p class="text-muted mb-4">Confirmar presença no veículo</p>
+                            <div class="d-grid gap-2">
+                                <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/viagens/aluno')">
+                                    <i class="bi bi-check-circle"></i> Confirmar Presença
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
         }
 
@@ -254,6 +302,7 @@
             aplicarPermissoes();
             carregarEstatisticas();
             configurarBotoesEspecificos();
+            configurarCardRelatoriosViagens();
         });
     </script>
 </div>
