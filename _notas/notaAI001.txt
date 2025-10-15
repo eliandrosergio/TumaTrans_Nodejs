@@ -1,7 +1,0 @@
-IA: claude | Conta: eliandrofaustino04 | Conversa: última
-
-Sistema do Cassules
-
-1. O sistema de registro e confirmação de viagens entre aluno e motorista, ainda não esta totalmente funcional. Primeiro vamos melhor o atual (analisa todos os arquivos antes de responder, estas a dar muitas respostas sem considerar o conteúdo de todos arquivos ou até todo o conteúdo de um arquivo que pretendes mandar alterações, fazendo com que eu passem horas alterando depois a tua implementação, e não estou a gostar); depois me dá opções para o sitema de confirmação de viagens (apenas ideias em texto, nada de código ou porra parecida.)
-
-
