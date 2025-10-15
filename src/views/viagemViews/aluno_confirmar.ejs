@@ -255,12 +255,10 @@
         );
     }
 
-    // Mostra mensagem aguardando confirmação do motorista
-    document.addEventListener('DOMContentLoaded', carregarViagemDisponivel);
-
     // Auto-refresh a cada 15 segundos
     let intervalId = null;
 
+    // Inicia auto-refresh
     function iniciarAutoRefresh() {
         intervalId = setInterval(() => {
             if (viagemAtualId && !presencaConfirmada) {
@@ -269,6 +267,7 @@
         }, 15000); // 15 segundos
     }
 
+    // Para auto-refresh
     function pararAutoRefresh() {
         if (intervalId) {
             clearInterval(intervalId);
@@ -284,4 +283,7 @@
             iniciarAutoRefresh();
         }
     }
+
+    // Mostra mensagem aguardando confirmação do motorista
+    document.addEventListener('DOMContentLoaded', carregarViagemDisponivel);
 </script>
