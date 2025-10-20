@@ -1,0 +1,308 @@
+<div class="mb-4">
+    <h2>Centro de Controle</h2>
+    <p class="text-muted">Complexo Escolar Privado SmartBits</p>
+</div>
+<hr>
+
+<div class="mt-5 mb-3">
+    <h4>Resumo Rápido</h4>
+    <p class="text-muted">Visão geral do sistema</p>
+
+    <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-lg-3">
+            <div class="card bg-primary text-white h-100 resumo-card">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <h3 id="totalAlunos" class="mb-2">-</h3>
+                    <p class="mb-0 small">Total de Alunos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card bg-success text-white h-100 resumo-card">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <h3 id="totalMotoristas" class="mb-2">-</h3>
+                    <p class="mb-0 small">Total de Motoristas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card bg-secondary text-white h-100 resumo-card">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <h3 id="totalVeiculos" class="mb-2">-</h3>
+                    <p class="mb-0 small">Total de Veículos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-lg-3">
+            <div class="card bg-info text-white h-100 resumo-card">
+                <div class="card-body text-center d-flex flex-column justify-content-center">
+                    <h3 id="totalRotas" class="mb-2">-</h3>
+                    <p class="mb-0 small">Total de Rotas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <h5 class="mb-3">Alunos</h5>
+                <p class="text-muted mb-4">Gestão de estudantes</p>
+                <div class="d-grid gap-2">
+                    <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/alunos/ver')">
+                        Ver Lista
+                    </a>
+                    <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/alunos/cadastro')">
+                        Cadastrar
+                    </a>
+                    <a class="btn btn-outline-secondary" href="#" onclick="navigateWithToken(event, '/api/alunos/cadastrar-rota')" id="btnCadastrarAlunosRota">
+                        Cadastrar em Rotas
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <h5 class="mb-3">Motoristas</h5>
+                <p class="text-muted mb-4">Gestão de condutores</p>
+                <div class="d-grid gap-2">
+                    <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/motoristas/ver')">
+                        Ver Lista
+                    </a>
+                    <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/motoristas/cadastro')">
+                        Cadastrar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <h5 class="mb-3">Veículos</h5>
+                <p class="text-muted mb-4">Gestão da frota</p>
+                <div class="d-grid gap-2">
+                    <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/veiculos/ver')">
+                        Ver Lista
+                    </a>
+                    <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/veiculos/cadastro')">
+                        Cadastrar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <h5 class="mb-3">Rotas</h5>
+                <p class="text-muted mb-4">Gestão de trajetos</p>
+                <div class="d-grid gap-2">
+                    <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/rotas/ver')">
+                        Ver Lista
+                    </a>
+                    <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/rotas/cadastro')">
+                        Cadastrar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <h5 class="mb-3">Usuários</h5>
+                <p class="text-muted mb-4">Gestão de contas de acesso</p>
+                <div class="d-grid gap-2">
+                    <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/usuarios/ver')">
+                        Ver Lista
+                    </a>
+                    <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/usuarios/cadastro')">
+                        Cadastrar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de Relatórios/Viagens - Muda conforme o nível -->
+    <div class="col-md-4" id="cardRelatoriosOuViagens">
+        <!-- Conteúdo carregado dinamicamente -->
+    </div>
+
+    <script>
+        // Função para obter nível do usuário do token
+        function getNivelUsuario() {
+            const token = localStorage.getItem('token');
+            if (!token) return null;
+            
+            try {
+                const payload = JSON.parse(atob(token.split('.')[1]));
+                return payload.nivel;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // Função para mostrar/ocultar seções baseado no nível
+        function aplicarPermissoes() {
+            const nivel = getNivelUsuario();
+            
+            if (!nivel) {
+                window.location.href = '/login';
+                return;
+            }
+
+            // Seleciona todas as cards do painel
+            const cardAlunos = document.querySelector('.col-md-4:nth-child(1)');
+            const cardMotoristas = document.querySelector('.col-md-4:nth-child(2)');
+            const cardVeiculos = document.querySelector('.col-md-4:nth-child(3)');
+            const cardRotas = document.querySelector('.col-md-4:nth-child(4)');
+            const cardUsuarios = document.querySelector('.col-md-4:nth-child(5)');
+            const cardRelatorios = document.querySelector('.col-md-4:nth-child(6)');
+
+            // Admin e Gerente veem tudo
+            if (nivel === 'admin' || nivel === 'gerente') {
+                return; // Mostra tudo
+            }
+
+            // Motorista: vê apenas alunos, veículos e rotas (sem botão cadastrar)
+            if (nivel === 'motorista') {
+                // Oculta usuários
+                if (cardUsuarios) cardUsuarios.style.display = 'none';
+                
+                // Remove botões de cadastrar
+                removerBotaoCadastrar(cardAlunos);
+                removerBotaoCadastrar(cardMotoristas);
+                removerBotaoCadastrar(cardVeiculos);
+                removerBotaoCadastrar(cardRotas);
+            }
+
+            // Aluno: vê apenas alunos, motoristas, veículos e rotas (sem botão cadastrar)
+            if (nivel === 'aluno') {
+                // Oculta usuários
+                if (cardUsuarios) cardUsuarios.style.display = 'none';
+                
+                // Remove botões de cadastrar
+                removerBotaoCadastrar(cardAlunos);
+                removerBotaoCadastrar(cardMotoristas);
+                removerBotaoCadastrar(cardVeiculos);
+                removerBotaoCadastrar(cardRotas);
+            }
+        }
+
+        // Configurar visibilidade dos botões baseado no nível
+        function configurarBotoesEspecificos() {
+            const nivel = getNivelUsuario();
+            
+            // Botão de cadastrar alunos em rotas (apenas admin e gerente)
+            const btnCadastrarAlunosRota = document.getElementById('btnCadastrarAlunosRota');
+            if (btnCadastrarAlunosRota) {
+                if (nivel === 'admin' || nivel === 'gerente') {
+                    btnCadastrarAlunosRota.style.display = 'block';
+                } else {
+                    btnCadastrarAlunosRota.style.display = 'none';
+                }
+            }
+        }
+
+        // Configurar card de Relatórios ou Viagens baseado no nível
+        function configurarCardRelatoriosViagens() {
+            const nivel = getNivelUsuario();
+            const card = document.getElementById('cardRelatoriosOuViagens');
+            
+            if (!card) return;
+            
+            if (nivel === 'admin' || nivel === 'gerente') {
+                // Admin e Gerente veem Relatórios
+                card.innerHTML = `
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <h5 class="mb-3">Relatórios</h5>
+                            <p class="text-muted mb-4">Visualizar dados e estatísticas</p>
+                            <div class="d-grid gap-2">
+                                <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/relatorios/ver')">
+                                    Ver Relatórios
+                                </a>
+                                <a class="btn btn-outline-primary" href="#" onclick="navigateWithToken(event, '/api/relatorios/viagens')">
+                                    Relatório de Viagens
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (nivel === 'motorista') {
+                // Motorista vê área de Viagens
+                card.innerHTML = `
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <h5 class="mb-3">Viagens</h5>
+                            <p class="text-muted mb-4">Gerenciar viagens e presenças</p>
+                            <div class="d-grid gap-2">
+                                <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/viagens/motorista')">
+                                    <i class="bi bi-bus-front"></i> Minhas Viagens
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (nivel === 'aluno') {
+                // Aluno vê área de Confirmar Presença
+                card.innerHTML = `
+                    <div class="card h-100">
+                        <div class="card-body p-4">
+                            <h5 class="mb-3">Minha Viagem</h5>
+                            <p class="text-muted mb-4">Confirmar presença no veículo</p>
+                            <div class="d-grid gap-2">
+                                <a class="btn btn-primary" href="#" onclick="navigateWithToken(event, '/api/viagens/aluno')">
+                                    <i class="bi bi-check-circle"></i> Confirmar Presença
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Função auxiliar para remover botão de cadastrar
+        function removerBotaoCadastrar(card) {
+            if (!card) return;
+            const btnCadastrar = card.querySelector('.btn-outline-primary');
+            if (btnCadastrar) btnCadastrar.style.display = 'none';
+        }
+
+        // Carregar estatísticas do dashboard
+        async function carregarEstatisticas() {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch('/api/relatorios/dashboard', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const stats = await response.json();
+                
+                document.getElementById('totalAlunos').textContent = stats.totalAlunos || 0;
+                document.getElementById('totalMotoristas').textContent = stats.totalMotoristas || 0;
+                document.getElementById('totalVeiculos').textContent = stats.totalVeiculos || 0;
+                document.getElementById('totalRotas').textContent = stats.totalRotas || 0;
+            } catch (err) {
+                console.error('Erro ao carregar estatísticas:', err);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            aplicarPermissoes();
+            carregarEstatisticas();
+            configurarBotoesEspecificos();
+            configurarCardRelatoriosViagens();
+        });
+    </script>
+</div>

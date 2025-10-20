@@ -1,0 +1,127 @@
+<div class="mb-4">
+    <h2>Editar Aluno</h2>
+    <p class="text-muted">Modificar dados do estudante</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div id="message" class="alert" style="display:none;"></div>
+        
+        <form id="editarAlunoForm">
+            <input type="hidden" id="alunoId">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="nome" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="num_processo" class="form-label">Número do Processo</label>
+                    <input type="text" class="form-control" id="num_processo" name="num_processo" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="data_nascimento" class="form-label">Data de Nascimento</label>
+                    <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="endereco" class="form-label">Endereço</label>
+                    <input type="text" class="form-control" id="endereco" name="endereco" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="telefone_aluno" class="form-label">Telefone do Aluno</label>
+                    <input type="tel" class="form-control" id="telefone_aluno" name="telefone_aluno" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="telefone_encarregado" class="form-label">Telefone do Encarregado</label>
+                    <input type="tel" class="form-control" id="telefone_encarregado" name="telefone_encarregado" required>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary me-2">Alterar</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="navigateWithToken(event, '/api/alunos/ver')">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Carrega os dados do aluno ao abrir a página
+    document.addEventListener('DOMContentLoaded', async () => {
+        const alunoId = new URLSearchParams(window.location.search).get('id');
+        if (!alunoId) {
+            alert('ID do aluno não informado');
+            navigateWithToken(event, '/api/alunos/ver');
+            return;
+        }
+        
+        // Traz o token do localStorage
+        const token = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`/api/alunos/${alunoId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const aluno = await response.json();
+            
+            if (response.ok) {
+                document.getElementById('alunoId').value = aluno.id;
+                document.getElementById('nome').value = aluno.nome;
+                document.getElementById('num_processo').value = aluno.num_processo;
+                document.getElementById('data_nascimento').value = aluno.data_nascimento;
+                document.getElementById('endereco').value = aluno.endereco;
+                document.getElementById('telefone_aluno').value = aluno.telefone_aluno;
+                document.getElementById('telefone_encarregado').value = aluno.telefone_encarregado;
+            } else {
+                emitirMensagem(document.getElementById('message'), 'danger', aluno.error);
+            }
+        } catch (err) {
+            console.error('Erro:', err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao carregar dados.');
+        }
+    });
+
+    document.getElementById('editarAlunoForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const data = {
+            nome: document.getElementById('nome').value,
+            num_processo: document.getElementById('num_processo').value,
+            data_nascimento: document.getElementById('data_nascimento').value,
+            endereco: document.getElementById('endereco').value,
+            telefone_aluno: document.getElementById('telefone_aluno').value,
+            telefone_encarregado: document.getElementById('telefone_encarregado').value
+        };
+
+        mostrarModal('Confirmar Alteração', 'Tem certeza que deseja alterar os dados deste aluno?', async () => {
+            const token = localStorage.getItem('token');
+            const alunoId = document.getElementById('alunoId').value;
+            
+            try {
+                const response = await fetch(`/api/alunos/${alunoId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    emitirMensagem(document.getElementById('message'), 'success', result.message);
+                    setTimeout(() => navigateWithToken(e, '/api/alunos/ver'), 1500);
+                } else {
+                    emitirMensagem(document.getElementById('message'), 'danger', result.error);
+                }
+            } catch (err) {
+                console.error('Erro:', err);
+                emitirMensagem(document.getElementById('message'), 'danger', 'Erro na conexão.');
+            }
+        }, false);
+    });
+</script>

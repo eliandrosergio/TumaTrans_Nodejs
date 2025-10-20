@@ -1,0 +1,114 @@
+// controllers/rotaController.js - Operações CRUD para rotas
+
+const { Rota } = require('../models');
+const { Aluno } = require('../models');
+const { Veiculo } = require('../models');
+const { Motorista } = require('../models');
+
+// Listar todos
+exports.list = async (req, res) => {
+    try {
+        const nivel = req.user.nivel;
+        const vinculoId = req.user.vinculo_id;
+        let rotas;
+
+        if (nivel === 'admin' || nivel === 'gerente') {
+            rotas = await Rota.findAll({
+                include: [
+                    { model: Motorista, as: 'motorista', attributes: ['id', 'nome'] },
+                    { model: Veiculo, as: 'veiculo', attributes: ['id', 'modelo', 'matricula'] },
+                    { model: Aluno, as: 'alunos', attributes: ['id', 'nome'] }
+                ]
+            });
+        } else if (nivel === 'motorista') {
+            rotas = await Rota.findAll({
+                where: { motorista_id: vinculoId },
+                include: [
+                    { model: Motorista, as: 'motorista', attributes: ['id', 'nome'] },
+                    { model: Veiculo, as: 'veiculo', attributes: ['id', 'modelo', 'matricula'] },
+                    { model: Aluno, as: 'alunos', attributes: ['id', 'nome'] }
+                ]
+            });
+        } else if (nivel === 'aluno') {
+            const aluno = await Aluno.findByPk(vinculoId);
+            if (aluno && aluno.rota_id) {
+                rotas = await Rota.findAll({
+                    where: { id: aluno.rota_id },
+                    include: [
+                        { model: Motorista, as: 'motorista', attributes: ['id', 'nome'] },
+                        { model: Veiculo, as: 'veiculo', attributes: ['id', 'modelo', 'matricula'] },
+                        { model: Aluno, as: 'alunos', attributes: ['id', 'nome'] }
+                    ]
+                });
+            }
+        }
+
+        res.json(rotas || []);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao listar rotas.' });
+    }
+};
+
+// Mostrar formulário da lista das rotas
+exports.formList = (req, res) => {
+    res.render('rotaViews/ver_rota', { title: 'Lista de Rotas Cadastradas' });
+};
+
+// Cadastrar rota
+exports.create = async (req, res) => {
+    try {
+        const rota = await Rota.create(req.body);
+        res.status(201).json({ message: 'Rota cadastrado com sucesso.', rota });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao cadastrar rota.' });
+    }
+};
+
+// Mostrar formulário de cadastro
+exports.formCreate = (req, res) => {
+    res.render('rotaViews/cadastro_rota', { title: 'Cadastrar Rota' });
+};
+
+// Buscar por ID
+exports.findById = async (req, res) => {
+    try {
+        const rota = await Rota.findByPk(req.params.id);
+        if (!rota) {
+            return res.status(404).json({ error: 'Rota não encontrada.' });
+        }
+        res.json(rota);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao buscar rota.' });
+    }
+};
+
+// Atualizar
+exports.update = async (req, res) => {
+    try {
+        const [updated] = await Rota.update(req.body, { where: { id: req.params.id } });
+        if (!updated) {
+            return res.status(404).json({ error: 'Rota não encontrada.' });
+        }
+        res.json({ message: 'Rota atualizada com sucesso.' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao atualizar rota.' });
+    }
+};
+
+// Deletar
+exports.delete = async (req, res) => {
+    try {
+        const deleted = await Rota.destroy({ where: { id: req.params.id } });
+        if (!deleted) {
+            return res.status(404).json({ error: 'Rota não encontrada.' });
+        }
+        res.json({ message: 'Rota excluída com sucesso.' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir rota.' });
+    }
+};
+
+// Mostrar formulário de edição
+exports.formEdit = (req, res) => {
+    res.render('rotaViews/editar_rota', { title: 'Editar Rota' });
+};

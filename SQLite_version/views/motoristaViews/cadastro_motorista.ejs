@@ -1,0 +1,75 @@
+<div class="mb-4">
+    <h2>Cadastrar Motorista</h2>
+    <p class="text-muted">Adicionar condutor ao sistema</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div id="message" class="alert" style="display:none;"></div>
+        
+        <form id="motoristaForm">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="nome" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="endereco" class="form-label">Endereço</label>
+                    <input type="text" class="form-control" id="endereco" name="endereco" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="telefone" class="form-label">Telefone</label>
+                    <input type="tel" class="form-control" id="telefone" name="telefone" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="telefone_emergencia" class="form-label">Telefone de Emergência</label>
+                    <input type="tel" class="form-control" id="telefone_emergencia" name="telefone_emergencia">
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">Cadastrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Manipula o envio do formulário
+    document.getElementById('motoristaForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        const data = {
+            nome: document.getElementById('nome').value,
+            endereco: document.getElementById('endereco').value,
+            telefone: document.getElementById('telefone').value,
+            telefone_emergencia: document.getElementById('telefone_emergencia').value
+        };
+        try {
+            const response = await fetch('/api/motoristas/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            const messageDiv = document.getElementById('message');
+            if (response.ok) {
+                emitirMensagem(messageDiv, 'success', result.message);
+            } else {
+                emitirMensagem(messageDiv, 'danger', result.error || 'Erro ao cadastrar.');
+            }
+            document.getElementById('motoristaForm').reset();
+        } catch (err) {
+            console.error('Erro:', err);
+            document.getElementById('message').textContent = 'Erro na conexão.';
+            document.getElementById('message').className = 'alert alert-danger';
+            document.getElementById('message').style.display = 'block';
+        }
+    });
+</script>

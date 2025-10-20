@@ -1,0 +1,394 @@
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2>Minhas Viagens</h2>
+            <p class="text-muted">Gerenciar viagens e registrar presenças dos alunos</p>
+        </div>
+    </div>
+
+    <div id="message" class="alert" style="display:none;"></div>
+
+    <!-- Iniciar Nova Viagem -->
+    <div class="row mb-4" id="cardIniciarViagem">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-play-circle"></i> Iniciar Nova Viagem</h5>
+                </div>
+                <div class="card-body">
+                    <form id="formIniciarViagem">
+                        <div class="row">
+                            <div class="col-md-8 col-lg-6 mx-auto">
+                                <div class="mb-3">
+                                    <label for="rota_id" class="form-label">Selecione a Rota</label>
+                                    <select class="form-control form-control-lg" id="rota_id" required>
+                                        <option value="">Carregando...</option>
+                                    </select>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg">
+                                        <i class="bi bi-play-fill"></i> Iniciar Viagem
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Viagem em Andamento -->
+    <div id="viagemAndamento" style="display:none;">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <div class="row align-items-center">
+                            <div class="col-12 col-md-5 mb-2 mb-md-0">
+                                <h5 class="mb-0"><i class="bi bi-bus-front"></i> Viagem em Andamento</h5>
+                            </div>
+                            <div class="col-12 col-md-7">
+                                <div class="row text-center text-md-end">
+                                    <div class="col-6 col-md-4 mb-2 mb-md-0">
+                                        <strong>Rota:</strong><br>
+                                        <span id="rotaNome" class="d-inline-block text-truncate" style="max-width: 150px;"></span>
+                                    </div>
+                                    <div class="col-6 col-md-4 mb-2 mb-md-0">
+                                        <strong>Início:</strong><br>
+                                        <span id="horarioInicio"></span>
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <h4 class="mb-0" id="contadorConfirmacoes">0/0</h4>
+                                        <small>Confirmados</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="d-flex flex-column flex-sm-row gap-2 justify-content-between align-items-start align-items-sm-center">
+                                    <h6 class="mb-0"><i class="bi bi-people"></i> Registrar Presença dos Alunos</h6>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-outline-primary btn-sm" onclick="atualizarConfirmacoes()">
+                                            <i class="bi bi-arrow-clockwise"></i> Atualizar
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" onclick="finalizarViagem()">
+                                            <i class="bi bi-stop-circle"></i> Finalizar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <!-- Lista de Paragens -->
+                        <div id="listaParagens"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let viagemAtualId = null;
+    let alunosPorParagem = {};
+    let presencasRegistradas = new Set();
+
+    async function carregarRotas() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/rotas/list', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const rotas = await response.json();
+            const select = document.getElementById('rota_id');
+            select.innerHTML = '<option value="">Selecione uma rota</option>';
+            rotas.forEach(rota => {
+                select.innerHTML += `<option value="${rota.id}">${rota.nome}</option>`;
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    document.getElementById('formIniciarViagem').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        const rota_id = document.getElementById('rota_id').value;
+        
+        try {
+            const response = await fetch('/api/viagens/iniciar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ rota_id })
+            });
+            const result = await response.json();
+            
+            if (response.ok) {
+                emitirMensagem(document.getElementById('message'), 'success', result.message);
+                document.getElementById('cardIniciarViagem').style.display = 'none';
+                carregarViagemAtiva();
+            } else {
+                emitirMensagem(document.getElementById('message'), 'danger', result.error);
+            }
+        } catch (err) {
+            console.error(err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao iniciar viagem.');
+        }
+    });
+
+    async function carregarViagemAtiva() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/viagens/listar-ativas', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const viagens = await response.json();
+            
+            if (viagens.length > 0) {
+                const viagem = viagens[0];
+                viagemAtualId = viagem.id;
+                
+                document.getElementById('rotaNome').textContent = viagem.rota.nome;
+                document.getElementById('horarioInicio').textContent = viagem.horario_inicio;
+                document.getElementById('cardIniciarViagem').style.display = 'none';
+                document.getElementById('viagemAndamento').style.display = 'block';
+                
+                await carregarAlunosPorParagem(viagem.rota);
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function carregarAlunosPorParagem(rota) {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/alunos/list', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const alunos = await response.json();
+            const alunosDaRota = alunos.filter(a => a.rota_id == rota.id);
+            
+            alunosPorParagem = {};
+            const paragens = rota.pontos_parada.split(',').map(p => p.trim());
+            
+            paragens.forEach(paragem => {
+                alunosPorParagem[paragem] = [];
+            });
+            
+            alunosDaRota.forEach(aluno => {
+                const paragem = aluno.paragem_embarque || 'Sem Paragem Definida';
+                if (!alunosPorParagem[paragem]) {
+                    alunosPorParagem[paragem] = [];
+                }
+                alunosPorParagem[paragem].push(aluno);
+            });
+            
+            renderizarParagens();
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function renderizarParagens() {
+        const container = document.getElementById('listaParagens');
+        container.innerHTML = '';
+        
+        Object.keys(alunosPorParagem).forEach((paragem, index) => {
+            const alunos = alunosPorParagem[paragem];
+            
+            if (alunos.length === 0) return;
+            
+            const paragemId = `paragem${index}`;
+            
+            container.innerHTML += `
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-header" style="cursor: pointer;" data-bs-toggle="collapse" data-bs-target="#${paragemId}">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
+                            <h6 class="mb-0">
+                                <i class="bi bi-geo-alt-fill text-primary"></i> ${paragem}
+                            </h6>
+                            <span class="badge bg-secondary">${alunos.length} aluno(s)</span>
+                        </div>
+                    </div>
+                    <div class="collapse" id="${paragemId}">
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush" id="alunos${paragemId}">
+                                ${alunos.map(aluno => `
+                                    <div class="list-group-item" id="aluno-item-${aluno.id}" style="transition: background-color 0.3s;">
+                                        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 py-2">
+                                            <div class="flex-grow-1">
+                                                <strong class="d-block">${aluno.nome}</strong>
+                                                <small class="text-muted">Processo: ${aluno.num_processo}</small>
+                                            </div>
+                                            <button 
+                                                class="btn btn-sm btn-success w-100 w-sm-auto" 
+                                                id="btn-aluno-${aluno.id}"
+                                                onclick="registrarPresenca(${aluno.id}, '${paragem}')"
+                                                ${presencasRegistradas.has(aluno.id) ? 'disabled' : ''}>
+                                                ${presencasRegistradas.has(aluno.id) ? 
+                                                    '<i class="bi bi-check-circle-fill"></i> Registrado' : 
+                                                    '<i class="bi bi-plus-circle"></i> Registrar'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    async function registrarPresenca(aluno_id, paragem) {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/viagens/registrar-presenca', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    viagem_id: viagemAtualId,
+                    aluno_id,
+                    paragem
+                })
+            });
+            const result = await response.json();
+            
+            if (response.ok) {
+                presencasRegistradas.add(aluno_id);
+                
+                const btn = document.getElementById(`btn-aluno-${aluno_id}`);
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Registrado';
+                    btn.classList.remove('btn-success');
+                    btn.classList.add('btn-secondary');
+                }
+                
+                emitirMensagem(document.getElementById('message'), 'success', 'Presença registrada!');
+            } else {
+                emitirMensagem(document.getElementById('message'), 'danger', result.error);
+            }
+        } catch (err) {
+            console.error(err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao registrar presença.');
+        }
+    }
+
+    async function atualizarConfirmacoes() {
+        if (!viagemAtualId) return;
+        
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch(`/api/viagens/buscar-presencas?viagem_id=${viagemAtualId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const presencas = await response.json();
+            
+            presencas.forEach(presenca => {
+                const alunoItem = document.getElementById(`aluno-item-${presenca.aluno_id}`);
+                const btn = document.getElementById(`btn-aluno-${presenca.aluno_id}`);
+                
+                if (alunoItem && btn) {
+                    if (presenca.confirmado_aluno) {
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Aluno Confirmou';
+                        btn.className = 'btn btn-sm btn-success w-100 w-sm-auto';
+                        alunoItem.style.backgroundColor = '#d4edda';
+                    } else if (presenca.confirmado_motorista) {
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="bi bi-clock-fill"></i> Aguardando Aluno';
+                        btn.className = 'btn btn-sm btn-warning w-100 w-sm-auto';
+                        alunoItem.style.backgroundColor = '#fff3cd';
+                        presencasRegistradas.add(presenca.aluno_id);
+                    }
+                }
+            });
+            
+            atualizarContador(presencas);
+        } catch (err) {
+            console.error('Erro ao atualizar confirmações:', err);
+        }
+    }
+
+    function atualizarContador(presencas) {
+        const totalAlunos = Object.values(alunosPorParagem).flat().length;
+        const confirmados = presencas.filter(p => p.confirmado_aluno).length;
+        
+        const contador = document.getElementById('contadorConfirmacoes');
+        if (contador) {
+            contador.textContent = `${confirmados}/${totalAlunos}`;
+            contador.style.color = confirmados === totalAlunos ? '#28a745' : '#007bff';
+        }
+    }
+
+    async function finalizarViagem() {
+        mostrarModal('Finalizar Viagem', 'Tem certeza que deseja finalizar esta viagem?', async () => {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch('/api/viagens/finalizar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ viagem_id: viagemAtualId })
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    mostrarModal('Sucesso!', 'Viagem finalizada com sucesso!', () => {
+                        location.reload();
+                    }, true);
+                } else {
+                    emitirMensagem(document.getElementById('message'), 'danger', result.error);
+                }
+            } catch (err) {
+                console.error(err);
+                emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao finalizar viagem.');
+            }
+        }, false);
+    }
+
+    let motoristaIntervalId = null;
+
+    function iniciarAutoRefreshMotorista() {
+        motoristaIntervalId = setInterval(() => {
+            if (viagemAtualId) {
+                atualizarConfirmacoes();
+            }
+        }, 10000);
+    }
+
+    const originalCarregarAtiva = carregarViagemAtiva;
+    carregarViagemAtiva = async function() {
+        await originalCarregarAtiva();
+        if (viagemAtualId) {
+            setTimeout(() => {
+                atualizarConfirmacoes();
+                iniciarAutoRefreshMotorista();
+            }, 1000);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        carregarRotas();
+        carregarViagemAtiva();
+    });
+</script>

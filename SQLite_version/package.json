@@ -1,0 +1,27 @@
+{
+  "name": "gestao-transporte-escolar",
+  "version": "2.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "eliandrosergio",
+  "license": "MIT",
+  "description": "",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "bootstrap": "^5.3.8",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.2.2",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-ejs-layouts": "^2.5.1",
+    "jsonwebtoken": "^9.0.2",
+    "nodemon": "^3.1.10",
+    "sequelize": "^6.37.7",
+    "sequelize-cli": "^6.6.3",
+    "sqlite3": "^5.1.7"
+  }
+}

@@ -1,0 +1,113 @@
+<div class="mb-4">
+    <h2>Editar Motorista</h2>
+    <p class="text-muted">Modificar dados do condutor</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div id="message" class="alert" style="display:none;"></div>
+        
+        <form id="editarMotoristaForm">
+            <input type="hidden" id="motoristaId">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="nome" class="form-label">Nome</label>
+                    <input type="text" class="form-control" id="nome" name="nome" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="endereco" class="form-label">Endereço</label>
+                    <input type="text" class="form-control" id="endereco" name="endereco" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="telefone" class="form-label">Telefone</label>
+                    <input type="tel" class="form-control" id="telefone" name="telefone" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="telefone_emergencia" class="form-label">Telefone de Emergência</label>
+                    <input type="tel" class="form-control" id="telefone_emergencia" name="telefone_emergencia" required>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary me-2">Alterar</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="navigateWithToken(event, '/api/motoristas/ver')">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Carrega os dados do motorista ao carregar a página
+    document.addEventListener('DOMContentLoaded', async () => {
+        const motoristaId = new URLSearchParams(window.location.search).get('id');
+        if (!motoristaId) {
+            alert('ID do motorista não informado');
+            navigateWithToken(event, '/api/motoristas/ver');
+            return;
+        }
+        
+        // Troca para pegar o token do cookie
+        const token = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`/api/motoristas/${motoristaId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const motorista = await response.json();
+            
+            if (response.ok) {
+                document.getElementById('motoristaId').value = motorista.id;
+                document.getElementById('nome').value = motorista.nome;
+                document.getElementById('endereco').value = motorista.endereco;
+                document.getElementById('telefone').value = motorista.telefone;
+                document.getElementById('telefone_emergencia').value = motorista.telefone_emergencia;
+            } else {
+                emitirMensagem(document.getElementById('message'), 'danger', motorista.error);
+            }
+        } catch (err) {
+            console.error('Erro:', err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao carregar dados.');
+        }
+    });
+
+    document.getElementById('editarMotoristaForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const data = {
+            nome: document.getElementById('nome').value,
+            endereco: document.getElementById('endereco').value,
+            telefone: document.getElementById('telefone').value,
+            telefone_emergencia: document.getElementById('telefone_emergencia').value
+        };
+
+        mostrarModal('Confirmar Alteração', 'Tem certeza que deseja alterar os dados deste motorista?', async () => {
+            const token = localStorage.getItem('token');
+            const motoristaId = document.getElementById('motoristaId').value;
+            
+            try {
+                const response = await fetch(`/api/motoristas/${motoristaId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                if (response.ok) {
+                    emitirMensagem(document.getElementById('message'), 'success', result.message);
+                    setTimeout(() => navigateWithToken(e, '/api/motoristas/ver'), 1500);
+                } else {
+                    emitirMensagem(document.getElementById('message'), 'danger', result.error);
+                }
+            } catch (err) {
+                console.error('Erro:', err);
+                emitirMensagem(document.getElementById('message'), 'danger', 'Erro na conexão.');
+            }
+        }, false);
+    });
+</script>

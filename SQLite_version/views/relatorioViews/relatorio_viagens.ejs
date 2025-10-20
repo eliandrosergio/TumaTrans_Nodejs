@@ -1,0 +1,148 @@
+<div class="mb-4">
+    <h2>Relatório de Viagens</h2>
+    <p class="text-muted">Acompanhamento de horários e presenças</p>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="formFiltro" class="row g-3">
+            <div class="col-md-4">
+                <label for="data_inicio" class="form-label">Data Início</label>
+                <input type="date" class="form-control" id="data_inicio" required>
+            </div>
+            <div class="col-md-4">
+                <label for="data_fim" class="form-label">Data Fim</label>
+                <input type="date" class="form-control" id="data_fim" required>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="message" class="alert" style="display:none;"></div>
+
+<div id="relatorioContainer"></div>
+
+<script>
+    async function carregarRelatorio() {
+        const data_inicio = document.getElementById('data_inicio').value;
+        const data_fim = document.getElementById('data_fim').value;
+        const token = localStorage.getItem('token');
+        
+        try {
+            const response = await fetch(`/api/relatorios/viagens-data?data_inicio=${data_inicio}&data_fim=${data_fim}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const viagens = await response.json();
+            
+            const container = document.getElementById('relatorioContainer');
+            
+            if (viagens.length === 0) {
+                container.innerHTML = '<div class="alert alert-info">Nenhuma viagem encontrada no período.</div>';
+                return;
+            }
+            
+            let html = '';
+            viagens.forEach(viagem => {
+                const totalAlunos = viagem.presencas ? viagem.presencas.length : 0;
+                const confirmadosMotorista = viagem.presencas ? viagem.presencas.filter(p => p.confirmado_motorista).length : 0;
+                const confirmadosAluno = viagem.presencas ? viagem.presencas.filter(p => p.confirmado_aluno).length : 0;
+                
+                html += `
+                    <div class="card mb-3">
+                        <div class="card-header d-flex justify-content-between">
+                            <div>
+                                <h5 class="mb-0">${viagem.rota.nome}</h5>
+                                <small class="text-muted">${viagem.data_viagem} | Motorista: ${viagem.motorista.nome}</small>
+                            </div>
+                            <span class="badge bg-${viagem.status === 'finalizada' ? 'success' : 'warning'}">${viagem.status}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <strong>Horário Início:</strong> ${viagem.horario_inicio || 'Não iniciada'}
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Horário Fim:</strong> ${viagem.horario_fim || 'Em andamento'}
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <div class="text-center p-2 bg-light rounded">
+                                        <h4 class="mb-0">${totalAlunos}</h4>
+                                        <small>Total de Alunos</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center p-2 bg-light rounded">
+                                        <h4 class="mb-0">${confirmadosMotorista}</h4>
+                                        <small>Confirmados (Motorista)</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="text-center p-2 bg-light rounded">
+                                        <h4 class="mb-0">${confirmadosAluno}</h4>
+                                        <small>Confirmados (Aluno)</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            ${totalAlunos > 0 ? `
+                                <h6>Detalhes das Presenças:</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Aluno</th>
+                                                <th>Paragem</th>
+                                                <th>Horário</th>
+                                                <th>Motorista</th>
+                                                <th>Aluno</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${viagem.presencas.map(p => `
+                                                <tr>
+                                                    <td>${p.aluno.nome}</td>
+                                                    <td>${p.paragem}</td>
+                                                    <td>${p.horario_entrada}</td>
+                                                    <td>${p.confirmado_motorista ? '<i class="bi bi-check-circle text-success"></i>' : '<i class="bi bi-x-circle text-danger"></i>'}</td>
+                                                    <td>${p.confirmado_aluno ? '<i class="bi bi-check-circle text-success"></i>' : '<i class="bi bi-x-circle text-danger"></i>'}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            ` : '<p class="text-muted">Nenhuma presença registrada.</p>'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        } catch (err) {
+            console.error(err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao carregar relatório.');
+        }
+    }
+
+    document.getElementById('formFiltro').addEventListener('submit', (e) => {
+        e.preventDefault();
+        carregarRelatorio();
+    });
+
+    // Definir datas padrão (últimos 7 dias)
+    document.addEventListener('DOMContentLoaded', () => {
+        const hoje = new Date();
+        const seteDiasAtras = new Date(hoje);
+        seteDiasAtras.setDate(hoje.getDate() - 7);
+        
+        document.getElementById('data_fim').value = hoje.toISOString().split('T')[0];
+        document.getElementById('data_inicio').value = seteDiasAtras.toISOString().split('T')[0];
+        
+        carregarRelatorio();
+    });
+</script>

@@ -1,0 +1,89 @@
+<div class="mb-4">
+    <h2>Alunos por Rota</h2>
+    <p class="text-muted">Visualização de alunos cadastrados em cada rota</p>
+</div>
+
+<div id="message" class="alert" style="display:none;"></div>
+
+<div class="row" id="rotasContainer">
+    <div class="col-12 text-center">
+        <p class="text-muted">Carregando relatório...</p>
+    </div>
+</div>
+
+<script>
+    async function carregarRelatorioAlunos() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/relatorios/alunos-por-rota', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const rotas = await response.json();
+            
+            const container = document.getElementById('rotasContainer');
+            const messageDiv = document.getElementById('message');
+            
+            if (rotas.error) {
+                emitirMensagem(messageDiv, 'danger', rotas.error);
+                return;
+            }
+            
+            if (rotas.length === 0) {
+                container.innerHTML = '<div class="col-12"><p class="text-center text-muted">Nenhuma rota encontrada</p></div>';
+                return;
+            }
+            
+            let html = '';
+            rotas.forEach(rota => {
+                const totalAlunos = rota.alunos ? rota.alunos.length : 0;
+                const motorista = rota.motorista ? rota.motorista.nome : 'Não definido';
+                const veiculo = rota.veiculo ? `${rota.veiculo.modelo} (${rota.veiculo.matricula})` : 'Não definido';
+                
+                html += `
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">${rota.nome}</h5>
+                                <span class="badge bg-primary">${totalAlunos} aluno(s)</span>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted mb-2">${rota.descricao}</p>
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <strong>Horário:</strong><br>
+                                        ${rota.horario_inicio} - ${rota.horario_fim}
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Motorista:</strong><br>
+                                        ${motorista}
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Veículo:</strong><br>
+                                    ${veiculo}
+                                </div>
+                                
+                                ${totalAlunos > 0 ? `
+                                    <div>
+                                        <strong>Alunos:</strong>
+                                        <ul class="list-unstyled mt-2">
+                                            ${rota.alunos.map(aluno => `<li><i class="bi bi-person"></i> ${aluno.nome}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                ` : '<p class="text-muted"><i class="bi bi-info-circle"></i> Nenhum aluno cadastrado nesta rota</p>'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        } catch (err) {
+            console.error('Erro:', err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao carregar relatório');
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', carregarRelatorioAlunos);
+</script>

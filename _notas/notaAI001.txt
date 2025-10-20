@@ -1,4 +1,2 @@
 1. adicionar a opcao de desativar e reativar alunos ou motoristas, alem das opcoes de editar e eliminar, onde alunos desativados não aparecem no sistema normal, como se estivessem eliminados, mas ainda aparecem na lista de alunos para usuários nivel gerente e admin, onde podem reativa-lo novamente, usuarios nivel aluno ou motorista que estiverem vinculados a um aluno ou motorista desativado, nao podem fazer login, podes adicionar um coluna na tabela de alunos, motoristas e usuarios para saber se o aluno ou motorista esta desativado, ou se o usuario esta desativado, impedindo o login.
 
-2. alterar todo o sistema para deixar de usar node e sqlite e passar a usar php e mysql
-

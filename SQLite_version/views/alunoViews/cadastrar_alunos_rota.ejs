@@ -1,0 +1,178 @@
+<div class="mb-4">
+    <h2>Cadastrar Alunos na Rota</h2>
+    <p class="text-muted">Vincular alunos às rotas e suas paragens</p>
+</div>
+
+<div id="message" class="alert" style="display:none;"></div>
+
+<div class="card">
+    <div class="card-body">
+        <form id="formCadastro">
+            <div class="mb-4">
+                <label for="rota_id" class="form-label">Selecione a Rota</label>
+                <select class="form-control" id="rota_id" required>
+                    <option value="">Carregando...</option>
+                </select>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Paragens da Rota (separadas por vírgula)</label>
+                <input type="text" class="form-control" id="pontos_parada" readonly>
+            </div>
+            
+            <hr>
+            
+            <div class="mb-3">
+                <label class="form-label">Selecione os Alunos</label>
+                <div id="listaAlunos" class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                    <p class="text-muted">Carregando alunos...</p>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Cadastrar na Rota</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    let alunosSelecionados = [];
+
+    async function carregarRotas() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/rotas/list', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const rotas = await response.json();
+            
+            const select = document.getElementById('rota_id');
+            select.innerHTML = '<option value="">Selecione uma rota</option>';
+            rotas.forEach(rota => {
+                select.innerHTML += `<option value="${rota.id}" data-pontos="${rota.pontos_parada}">${rota.nome}</option>`;
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    document.getElementById('rota_id').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const pontos = selectedOption.getAttribute('data-pontos') || '';
+        document.getElementById('pontos_parada').value = pontos;
+        
+        if (this.value) {
+            carregarAlunos();
+        }
+    });
+
+    async function carregarAlunos() {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/alunos/list', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const alunos = await response.json();
+            
+            const pontos = document.getElementById('pontos_parada').value.split(',').map(p => p.trim());
+            const lista = document.getElementById('listaAlunos');
+            
+            lista.innerHTML = '';
+            alunos.forEach(aluno => {
+                lista.innerHTML += `
+                    <div class="form-check mb-3 p-3 border rounded">
+                        <input class="form-check-input" type="checkbox" value="${aluno.id}" id="aluno${aluno.id}" onchange="toggleAluno(${aluno.id})">
+                        <label class="form-check-label w-100" for="aluno${aluno.id}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>${aluno.nome}</strong><br>
+                                    <small class="text-muted">Processo: ${aluno.num_processo}</small>
+                                </div>
+                                <select class="form-control w-50" id="paragem${aluno.id}" disabled>
+                                    <option value="">Selecione a paragem</option>
+                                    ${pontos.map(p => `<option value="${p}">${p}</option>`).join('')}
+                                </select>
+                            </div>
+                        </label>
+                    </div>
+                `;
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    function toggleAluno(alunoId) {
+        const checkbox = document.getElementById(`aluno${alunoId}`);
+        const select = document.getElementById(`paragem${alunoId}`);
+        
+        if (checkbox.checked) {
+            select.disabled = false;
+            select.required = true;
+        } else {
+            select.disabled = true;
+            select.required = false;
+            select.value = '';
+        }
+    }
+
+    document.getElementById('formCadastro').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const rota_id = document.getElementById('rota_id').value;
+        const checkboxes = document.querySelectorAll('#listaAlunos input[type="checkbox"]:checked');
+        
+        const alunos = [];
+        let erro = false;
+        
+        checkboxes.forEach(cb => {
+            const alunoId = cb.value;
+            const paragem = document.getElementById(`paragem${alunoId}`).value;
+            
+            if (!paragem) {
+                erro = true;
+                emitirMensagem(document.getElementById('message'), 'danger', 'Selecione a paragem para todos os alunos marcados.');
+                return;
+            }
+            
+            alunos.push({
+                aluno_id: parseInt(alunoId),
+                paragem: paragem
+            });
+        });
+        
+        if (erro || alunos.length === 0) {
+            if (alunos.length === 0) {
+                emitirMensagem(document.getElementById('message'), 'warning', 'Selecione ao menos um aluno.');
+            }
+            return;
+        }
+        
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('/api/alunos/cadastrar-alunos-rota', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ rota_id, alunos })
+            });
+            const result = await response.json();
+            
+            if (response.ok) {
+                emitirMensagem(document.getElementById('message'), 'success', result.message);
+                document.getElementById('formCadastro').reset();
+                document.getElementById('listaAlunos').innerHTML = '<p class="text-muted">Selecione uma rota primeiro.</p>';
+            } else {
+                emitirMensagem(document.getElementById('message'), 'danger', result.error);
+            }
+        } catch (err) {
+            console.error(err);
+            emitirMensagem(document.getElementById('message'), 'danger', 'Erro ao cadastrar alunos.');
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', carregarRotas);
+</script>
