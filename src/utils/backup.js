@@ -49,6 +49,7 @@ const agendarBackup = () => {
     const proximoBackup = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate() + 1, 2, 0, 0);
     const tempoAteProximo = proximoBackup.getTime() - agora.getTime();
     
+    criarBackup();
     setTimeout(() => {
         criarBackup();
         setInterval(criarBackup, 24 * 60 * 60 * 1000); // Diariamente

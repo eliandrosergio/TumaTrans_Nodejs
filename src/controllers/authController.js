@@ -34,7 +34,7 @@ exports.login = async (req, res) => {
             id: usuario.id, 
             nivel: usuario.nivel,
             vinculo_id: usuario.vinculo_id 
-        }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        }, process.env.JWT_SECRET, { expiresIn: '2h' });
         
         res.cookie('authToken', token, { 
             httpOnly: false,

@@ -8,9 +8,7 @@ const authMiddleware = (req, res, next) => {
     // lendo o token do header Authorization, cookie ou query/body
     const token = req.header('Authorization')?.replace('Bearer ', '') || 
                 req.cookies.authToken ||
-                req.query.authToken || 
-                req.body.authToken ||
-                req.cookies.authToken;
+                req.query.authToken;
 
     if (!token) {
         return res.render('home', { title: 'Gestão de Transporte Escolar' });
